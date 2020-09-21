@@ -1,0 +1,31 @@
+const express = require('express')
+const bodyParser = require('body-parser')
+const developerRouter = require('./src/routes/developer')
+const recruiterRouter = require('./src/routes/recruiter')
+const bioDevRouter = require('./src/routes/biodev')
+const bioRecRouter = require('./src/routes/biorec')
+const skillRouter = require('./src/routes/skill')
+const portRouter = require('./src/routes/port')
+const expRouter = require('./src/routes/exp')
+const prjRouter = require('./src/routes/project')
+const prjDevRouter = require('./src/routes/prodev')
+const srcRouter = require('./src/routes/search')
+
+const app = express()
+
+app.use(bodyParser.urlencoded({extended: false}))
+app.use('/developer', developerRouter)
+app.use('/recruiter', recruiterRouter)
+app.use('/developer/bio', bioDevRouter)
+app.use('/recruiter/bio', bioRecRouter)
+app.use('/developer/skill', skillRouter)
+app.use('/developer/port', portRouter)
+app.use('/developer/exp', expRouter)
+app.use('/recruiter/project', prjRouter)
+app.use('/recruiter/project/dev', prjDevRouter)
+app.use('/search', srcRouter)
+
+
+app.listen(3000,()=>{
+    console.log('listening Port 3000 maas')
+})
