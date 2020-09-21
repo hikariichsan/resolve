@@ -40,8 +40,7 @@ module.exports ={
         })
     },
     putRecruiterModel : (idRec, data, cb)=>{
-        db.query(`UPDATE recruiter SET ${data}
-        WHERE id_recruiter = ${idRec}`, (err, result,fields) =>{
+        db.query(`UPDATE recruiter SET ${data} WHERE id_recruiter = ${idRec}`, (err, result,fields) =>{
             cb(result)
         })
     },

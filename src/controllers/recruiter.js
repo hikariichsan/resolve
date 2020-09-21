@@ -3,7 +3,7 @@ const {createRecruiterModel, getDataRecruiterModel, selectRecruiterModel, delete
 
 module.exports = {
     createDataRecruiter : (req, res) => {
-        const {name, email, company, position, password, no_hp,created_at,updated_at} = req.body
+        const {name, email, company, position, password, no_hp,} = req.body
         if (name && email && company && position && password && no_hp){
             createRecruiterModel([name, email,company, position, password,no_hp], result=>{
                 console.log(result);
@@ -86,7 +86,7 @@ res.status(201).send({
             }else{
                 res.send({
                     success:false,
-                    message:'Data not Found'
+                    message:'Data not Found'    
                 })
             }
             })
@@ -100,9 +100,9 @@ res.status(201).send({
                         const data = Object.entries(req.body).map(item =>{
                             return parseInt(item[1]) > 0 ? `${item[0]} = ${item[1]}` : `${item[0]}='${item[1]}'`
                         })
-                        console.log(data);
+                        console.log(data)
                putRecruiterModel (idRec,data, result =>{
-                    console.log(result);
+                   console.log(result);
                             if(result.affectedRows){
                                 res.send({
                                     success: true,
@@ -131,7 +131,7 @@ res.status(201).send({
             },
             patchRecruiter : (req,res)=>{
                     const idRec  = req.params.id
-                    const {name ='', email='',password='',no_hp=''} = req.body
+                    const {name ='', email='', company='',position='',password='',no_hp=''} = req.body
                 if (name.trim() || email.trim() || company.trim() || position.trim() || password.trim() || no_hp.trim() ) {
                     selectRecruiterModel(idRec, result=>{
                 if (result.length){
