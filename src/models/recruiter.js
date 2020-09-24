@@ -1,18 +1,34 @@
+const { request, response } = require('express')
 const db = require('../helpers/db')
 
 module.exports ={
-    createRecruiterModel : (arr, cb) =>{
-        const query =`INSERT INTO recruiter (name, email, company, position, password, no_hp) VALUES('${arr[0]}','${arr[1]}','${arr[2]}','${arr[3]}','${arr[4]}','${arr[5]}')`
-        db.query(query, (err, result,fields)=>{
-            if(!err){
-                cb(result) 
-              }else{
-                  res.send({
-                      success: false,
-                      message: 'Cant to created  :' + err
-                  })
-      
-              }
+    
+    postRecruiterModel : (setData) => {
+        return new Promise((resolve, reject)=>{
+            db.query('INSERT INTO recruiter SET ? ',setData,(error, result)=>{
+                if(!error){
+                    const newResult ={
+                   id: result.insertId,
+                   ...setData
+                   }
+                   delete newResult.password
+                   resolve(newResult)
+                }else{
+                    reject(new Error(error))
+                }
+            })
+        })
+       
+    },
+    checkRecruiterModel: (email) => {
+        return new Promise((resolve, reject)=>{
+            db.query('SELECT id_recruiter, email, password, name, company,no_hp FROM recruiter WHERE email = ?',email,(error, result) =>{
+                if(!error){
+                    resolve(result)
+                }else{
+                    reject(new Error(error))
+                }
+            })
         })
     },
     getDataRecruiterModel : (searchKey,searchValue,limit,offset, cb)=>{

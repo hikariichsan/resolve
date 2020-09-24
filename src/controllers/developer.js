@@ -1,26 +1,37 @@
 const db = require('../helpers/db')
-const {createDeveloperModel, getDataDeveloperModel, selectDeveloperModel, deleteDeveloperIDModel, putDeveloperModel, pathDeveloperModel} = require('../models/developer')
+const {postDeveloperModel, getDataDeveloperModel, selectDeveloperModel, deleteDeveloperIDModel, putDeveloperModel, pathDeveloperModel} = require('../models/developer')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+require('dotenv').config()
 
 module.exports = {
-    createDataDeveloper : (req, res) => {
-        const {name, email, password, no_hp} = req.body
-        if (name && email && password && no_hp){
-            createDeveloperModel([name, email,password,no_hp], result=>{
-                console.log(result);
-res.status(201).send({
-    success:true,
-    message: 'Developer has been created',
-    data: req.body
-})
-            })
-        }else{
-            res.status(500).send({
-                success:false,
-                message: 'All field must be filled'
-            })
+    registerDeveloper : async (request,response)=>{
+        const {name, email, password, no_hp}= request.body
+        const salt = bcrypt.genSaltSync(10)
+        const encryptPassword = bcrypt.hashSync(password, salt)
+        const setData =  {
+            name,
+            email,
+            password : encryptPassword,
+            no_hp,
+            created_at: new Date()
         }
-
-        
+        try {
+            const result = await postDeveloperModel(setData)
+            console.log(result)
+            response.send({
+                success: true,
+                message: 'Success Register Developer!',
+                data: result
+            })
+        } catch (error) {
+            console.log(error)
+            response.status(400).send({
+                success: false,
+                message: 'Bad Request!'
+            })
+            
+        }
     },
     getDataDeveloper : (req, res)=>{
         let {page, limit, search } = req.query

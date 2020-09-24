@@ -1,19 +1,17 @@
 const db = require('../helpers/db')
 
 module.exports ={
-    createProjectModel : (arr, cb) =>{
-        const query =`INSERT INTO project ( name_project,location,description,deadline_month,image, id_recruiter ) VALUES('${arr[0]}','${arr[1]}','${arr[2]}', ${arr[3]},'${arr[4]}', ${arr[5]})`
-        db.query(query, (err, result,fields)=>{
-            if(!err){
-                cb(result) 
+    createProjectModel : (setData) =>{
+      return new Promise((resolve, reject)=>{
+          const query = 'INSERT INTO project SET ?'
+          db.query(query, setData, (err, result, _fields)=>{
+              if(!err){
+                  resolve(result)
               }else{
-                  res.send({
-                      success: false,
-                      message: 'Cant to created  :' + err
-                  })
-      
+                  reject(new Error(err))
               }
-        })
+          })
+      })
     },
     getProjectModel : (searchKey,searchValue,limit,offset, cb)=>{
         const query =`SELECT * FROM project WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`

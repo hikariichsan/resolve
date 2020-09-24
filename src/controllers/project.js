@@ -2,23 +2,31 @@ const db = require('../helpers/db')
 const {createProjectModel, getProjectModel, selectProjectModel, deleteProjectIDModel, putProjectModel, patchProjectModel} = require('../models/project')
 
 module.exports = {
-    createProject : (req, res) => {
-        const {name_project , location , description, deadline_month, image , id_recruiter} = req.body
-        if (name_project && location && description && deadline_month&& image && id_recruiter ){
-            createProjectModel([name_project , location , description , deadline_month , image , id_recruiter], result=>{
-                console.log(result);
-res.status(201).send({
-    success:true,
-    message: 'Project has been created',
-    data: req.body
-})
-            })
-        }else{
+    createProject : async (req, res) => {
+        try {
+            const {name_project , location , description, deadline_month, id_recruiter} = req.body
+       const setData = {
+           name_project,
+           location,
+           description,
+           deadline_month,
+           id_recruiter,
+           image: req.file === undefined ? '' : req.file.filename
+       }
+       const resultCreate = await createProjectModel(setData)
+       res.status(200).send({
+           success: true,
+           message:'Product Created',
+           data: setData
+       })
+        } catch (error) {
             res.status(500).send({
-                success:false,
-                message: 'All field must be filled'
+                success: false,
+                message: 'Bad Request'
             })
+            
         }
+        
 
         
     },

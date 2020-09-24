@@ -1,27 +1,87 @@
 const db = require('../helpers/db')
-const {createRecruiterModel, getDataRecruiterModel, selectRecruiterModel, deleteRecruiterIDModel, putRecruiterModel, pathRecruiterModel} = require('../models/recruiter')
+const {postRecruiterModel,checkRecruiterModel, getDataRecruiterModel, selectRecruiterModel, deleteRecruiterIDModel, putRecruiterModel, pathRecruiterModel} = require('../models/recruiter')
+const bcrypt = require('bcryptjs')
+const { request, response } = require('express')
+const jwt = require('jsonwebtoken')
+require('dotenv').config()
 
 module.exports = {
-    createDataRecruiter : (req, res) => {
-        const {name, email, company, position, password, no_hp,} = req.body
-        if (name && email && company && position && password && no_hp){
-            createRecruiterModel([name, email,company, position, password,no_hp], result=>{
-                console.log(result);
-res.status(201).send({
-    success:true,
-    message: 'Recruiter has been created',
-    data: req.body
-})
+    registerRecruiter: async (request,response)=>{
+        const {name, email, company, position, password, no_hp}= request.body
+        const salt = bcrypt.genSaltSync(10)
+        const encryptPassword = bcrypt.hashSync(password, salt)
+        const setData =  {
+            name,
+            email,
+            company,
+            position,
+            password : encryptPassword,
+            no_hp,
+            created_at: new Date()
+        }
+        try {
+            const result = await postRecruiterModel(setData)
+            console.log(result)
+            response.send({
+                success: true,
+                message: 'Success Register User!',
+                data: result
             })
-        }else{
-            res.status(500).send({
-                success:false,
-                message: 'All field must be filled'
+        } catch (error) {
+            console.log(error)
+            response.status(400).send({
+                success: false,
+                message: 'Bad Request!'
+            })
+            
+        }
+    },
+
+    loginRecruiter : async (request, response)=>{
+        try {
+            const { email, password} = request.body
+            const checkDataRecruiter = await checkRecruiterModel(email)
+            if (checkDataRecruiter.length >= 1) {
+                const checkPassword = bcrypt.compareSync(
+                    password, 
+                    checkDataRecruiter[0].password)
+           if(checkPassword){
+               const{id_recruiter,name,email,company,password} = checkDataRecruiter[0]
+               let payload = {
+                   id_recruiter,
+                   name,
+                   email,
+                   company,
+                   password
+               }
+               const token = jwt.sign(payload, process.env.JWT_KEY, {expiresIn : '1h'})
+               payload = { ...payload, token}
+               response.send({
+                   success: true,
+                   message: 'Success Login!',
+                   data: payload
+               })
+           }else{
+            response.status(400).send({
+                success: false,
+                message: 'Wrong Password!'
+            })
+           }
+            }else{
+                response.status(400).send({
+                    success: false,
+                    message: 'Email/Account not Register'
+                })
+            }
+        } catch (error) {
+            console.log(error)
+            response.status(400).send({
+                success: false,
+                message: 'Bad Request!'
             })
         }
-
-        
     },
+
     getDataRecruiter : (req, res)=>{
         let {page, limit, search } = req.query
     
@@ -145,6 +205,7 @@ res.status(201).send({
                         res.send({
                             success: true,
                             message: `Recruiter with id ${idRec} has been updated`,
+                            data : data
                         })
                     }else{
                         res.send({

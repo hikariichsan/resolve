@@ -1,19 +1,22 @@
 const db = require('../helpers/db')
 
 module.exports ={
-    createDeveloperModel : (arr, cb) =>{
-        const query =`INSERT INTO developer (name, email, password, no_hp) VALUES('${arr[0]}','${arr[1]}','${arr[2]}','${arr[3]}')`
-        db.query(query, (err, result,fields)=>{
-            if(!err){
-                cb(result) 
-              }else{
-                  res.send({
-                      success: false,
-                      message: 'Cant to created  :' + err
-                  })
-      
-              }
+    postDeveloperModel : (setData) => {
+        return new Promise((resolve, reject)=>{
+            db.query('INSERT INTO developer SET ? ',setData,(error, result)=>{
+                if(!error){
+                    const newResult ={
+                   id: result.insertId,
+                   ...setData
+                   }
+                   delete newResult.password
+                   resolve(newResult)
+                }else{
+                    reject(new Error(error))
+                }
+            })
         })
+       
     },
     getDataDeveloperModel : (searchKey,searchValue,limit,offset, cb)=>{
         const query =`SELECT * FROM developer WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`
