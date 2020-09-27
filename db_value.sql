@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 27 Sep 2020 pada 19.43
+-- Waktu pembuatan: 27 Sep 2020 pada 22.57
 -- Versi server: 10.4.11-MariaDB
 -- Versi PHP: 7.4.3
 
@@ -95,6 +95,7 @@ CREATE TABLE `developer` (
   `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `no_hp` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -103,11 +104,11 @@ CREATE TABLE `developer` (
 -- Dumping data untuk tabel `developer`
 --
 
-INSERT INTO `developer` (`id_dev`, `name`, `email`, `password`, `no_hp`, `created_at`, `updated_at`) VALUES
-(15, 'Ahmad', 'dan@gmail.com', 'dan', '3452', '2020-09-18 23:05:38', '2020-09-21 10:24:40'),
-(17, 'ramu', 'ramu@gmail.com', 'ramu', '34567', '2020-09-18 23:15:40', '2020-09-18 23:15:40'),
-(19, 'ahmad', 'ahmad@gmail.com', 'ahmad', '7654', '2020-09-18 23:17:49', '2020-09-18 23:17:49'),
-(21, 'ahmad', 'ahad@gmail.com', '$2a$10$Sv3cXkYpVdnfzJ8uVUtFW.2rt6b7JIMbUURo22ghGTv6Vx9dNlYiu', '7654', '2020-09-24 05:04:31', '2020-09-24 05:04:31');
+INSERT INTO `developer` (`id_dev`, `name`, `email`, `password`, `no_hp`, `role`, `created_at`, `updated_at`) VALUES
+(15, 'Ahmad', 'dan@gmail.com', 'dan', '3452', 2, '2020-09-18 23:05:38', '2020-09-27 19:12:24'),
+(17, 'ramu', 'ramu@gmail.com', 'ramu', '34567', 2, '2020-09-18 23:15:40', '2020-09-27 19:12:34'),
+(19, 'ahmad', 'ahmad@gmail.com', 'ahmad', '7654', 2, '2020-09-18 23:17:49', '2020-09-27 19:12:53'),
+(21, 'ahmad', 'ahad@gmail.com', '$2a$10$Sv3cXkYpVdnfzJ8uVUtFW.2rt6b7JIMbUURo22ghGTv6Vx9dNlYiu', '7654', 2, '2020-09-24 05:04:31', '2020-09-27 19:13:32');
 
 -- --------------------------------------------------------
 
@@ -248,26 +249,27 @@ CREATE TABLE `recruiter` (
   `password` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `no_hp` varchar(14) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
-  `update_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `update_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `role` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data untuk tabel `recruiter`
 --
 
-INSERT INTO `recruiter` (`id_recruiter`, `name`, `email`, `company`, `position`, `password`, `no_hp`, `created_at`, `update_at`) VALUES
-(3, 'Hajon Mahdy', 'bravo@gmail.com', 'PT.KREASI PUTRA HOTAMA', 'CEO', 'jonmadi', '086543', '2020-09-19 03:48:06', '2020-09-23 19:26:52'),
-(4, 'Romeo Oreo Roma', 'rome0@gmail.com', 'PT.TAMAN PUJANGGA', 'HRD', 'rome0', '833334', '2020-09-19 03:51:13', '2020-09-23 19:27:25'),
-(5, 'Hanif Rafudin', 'asef.09@gmail.com', 'PT.ADITYA SENTOSA', 'HRD', 'asef56', '0823253', '2020-09-19 03:53:59', '2020-09-19 03:53:59'),
-(6, 'Rahmat Iskandar', 'mat.is.98@gmail.com', 'PT.DJAYA BATAVIA', 'HRD', 'mat98is', '76523', '2020-09-19 03:57:24', '2020-09-19 03:57:24'),
-(7, 'Alphen Tora', 'tora.90@gmail.com', 'PT.BONAR ANDALAN', 'HRD', 'torikan', '05643', '2020-09-19 03:59:07', '2020-09-19 03:59:07'),
-(8, 'Akhsari Sophian', 'akh.sop@gmail.com', 'PT.PURNAMA JAYA ABADI', 'HRD', 'kihihi', '0746453', '2020-09-19 04:00:53', '2020-09-19 04:00:53'),
-(9, 'Hanafi Andili', 'hanaf.1@gmail.com', 'PT.CINTA SEJATI', 'Manager Project', 'hanaf1', '044414', '2020-09-19 04:02:07', '2020-09-21 10:29:07'),
-(12, 'Somad', 'sasimi@gmail.com', 'PT.DIRIKU SEKARANG', 'HRD', 'hanaf1', '044414', '2020-09-21 10:03:36', '2020-09-23 19:36:51'),
-(13, 'bakar', 'bakar@gmail.com', 'PT.KREASI BANGSAN', 'HRD', 'hanaf1', '044414', '2020-09-23 20:12:41', '2020-09-23 20:12:41'),
-(14, 'acha', 'acha@gmail.com', 'PT.KENCANA', 'HRD', '$2a$10$vW749IVSrm3TEDZEJgkeOOgg8Wr/dNepQDHZTO9D2KZmkzEHtOaHe', '08505050', '2020-09-23 20:53:02', '2020-09-23 20:53:02'),
-(15, 'varsha', 'varsha@gmail.com', 'PT.VARSHAM', 'HRD', '$2a$10$QR1DnorZpnSLdOUMle3qouypnG5qVaiRHcZkC0NoqJ.wDfQ8Xtz4m', '08505050', '2020-09-23 20:59:58', '2020-09-23 20:59:58'),
-(16, 'varsha', 'varsha@gmail.com', 'PT.VARSHAM', 'HRD', '$2a$10$N8hHmAtua/DGKg1R7FOPVultOee.vF9DNRPPyA.t61SknxUbAYOJe', '08505050', '2020-09-23 21:03:57', '2020-09-23 21:03:57');
+INSERT INTO `recruiter` (`id_recruiter`, `name`, `email`, `company`, `position`, `password`, `no_hp`, `created_at`, `update_at`, `role`) VALUES
+(3, 'Hajon Mahdy', 'bravo@gmail.com', 'PT.KREASI PUTRA HOTAMA', 'CEO', 'jonmadi', '086543', '2020-09-19 03:48:06', '2020-09-27 19:14:37', 1),
+(4, 'Romeo Oreo Roma', 'rome0@gmail.com', 'PT.TAMAN PUJANGGA', 'HRD', 'rome0', '833334', '2020-09-19 03:51:13', '2020-09-27 19:14:48', 1),
+(5, 'Hanif Rafudin', 'asef.09@gmail.com', 'PT.ADITYA SENTOSA', 'HRD', 'asef56', '0823253', '2020-09-19 03:53:59', '2020-09-27 19:14:55', 1),
+(6, 'Rahmat Iskandar', 'mat.is.98@gmail.com', 'PT.DJAYA BATAVIA', 'HRD', 'mat98is', '76523', '2020-09-19 03:57:24', '2020-09-27 19:15:06', 1),
+(7, 'Alphen Tora', 'tora.90@gmail.com', 'PT.BONAR ANDALAN', 'HRD', 'torikan', '05643', '2020-09-19 03:59:07', '2020-09-27 19:15:20', 1),
+(8, 'Akhsari Sophian', 'akh.sop@gmail.com', 'PT.PURNAMA JAYA ABADI', 'HRD', 'kihihi', '0746453', '2020-09-19 04:00:53', '2020-09-27 19:15:36', 1),
+(9, 'Hanafi Andili', 'hanaf.1@gmail.com', 'PT.CINTA SEJATI', 'Manager Project', 'hanaf1', '044414', '2020-09-19 04:02:07', '2020-09-27 19:15:48', 1),
+(12, 'Somad', 'sasimi@gmail.com', 'PT.DIRIKU SEKARANG', 'HRD', 'hanaf1', '044414', '2020-09-21 10:03:36', '2020-09-27 19:16:00', 1),
+(13, 'bakar', 'bakar@gmail.com', 'PT.KREASI BANGSAN', 'HRD', 'hanaf1', '044414', '2020-09-23 20:12:41', '2020-09-27 19:16:11', 1),
+(14, 'acha', 'acha@gmail.com', 'PT.KENCANA', 'HRD', '$2a$10$vW749IVSrm3TEDZEJgkeOOgg8Wr/dNepQDHZTO9D2KZmkzEHtOaHe', '08505050', '2020-09-23 20:53:02', '2020-09-27 19:16:21', 1),
+(15, 'varsha', 'varsha@gmail.com', 'PT.VARSHAM', 'HRD', '$2a$10$QR1DnorZpnSLdOUMle3qouypnG5qVaiRHcZkC0NoqJ.wDfQ8Xtz4m', '08505050', '2020-09-23 20:59:58', '2020-09-27 19:16:33', 1),
+(16, 'varsha', 'varsha@gmail.com', 'PT.VARSHAM', 'HRD', '$2a$10$N8hHmAtua/DGKg1R7FOPVultOee.vF9DNRPPyA.t61SknxUbAYOJe', '08505050', '2020-09-23 21:03:57', '2020-09-27 19:16:43', 1);
 
 -- --------------------------------------------------------
 
