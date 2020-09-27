@@ -2,24 +2,33 @@ const db = require('../helpers/db')
 const {createBioDevModel, getBioDevModel, selectBioDevModel, deleteBioDevIDModel, putBioDevModel, pathBioDevModel} = require('../models/biodev')
 
 module.exports = {
-    createBioDev : (req, res) => {
-        const {id_dev,name, status_job,job_desk,image, city, work_place,description,created_at,updated_at} = req.body
-        if (name && id_dev && status_job && job_desk && image && city && work_place && description ){
-            createBioDevModel([id_dev,name, status_job,job_desk,image,city,work_place,description], result=>{
-                console.log(result);
-res.status(201).send({
-    success:true,
-    message: 'Bio Developer has been created',
-    data: req.body
-})
-            })
-        }else{
-            res.status(500).send({
-                success:false,
-                message: 'All field must be filled'
-            })
+    createBioDev : async (req, res) => {
+        try{
+        const {id_dev,name, status_job,job_desk,image, city, work_place,description} = req.body
+        const setData = {
+            name,
+            id_dev,
+            status_job,
+            job_desk,
+            city,
+            work_place,
+            description,
+            image: req.file === undefined ? '' : req.file.filename
+        
         }
-
+                const resultCreate = await createBioDevModel(setData)
+                res.status(200).send({
+                    success: true,
+                    message:'Product Created',
+                    data: setData
+                })
+                 } catch (error) {
+                     res.status(500).send({
+                         success: false,
+                         message: 'Bad Request'
+                     })
+                     
+                 }
         
     },
     getBioDev : (req, res)=>{

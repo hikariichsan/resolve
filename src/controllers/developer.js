@@ -1,5 +1,5 @@
 const db = require('../helpers/db')
-const {postDeveloperModel, getDataDeveloperModel, selectDeveloperModel, deleteDeveloperIDModel, putDeveloperModel, pathDeveloperModel} = require('../models/developer')
+const {postDeveloperModel,checkDeveloperModel, getDataDeveloperModel, selectDeveloperModel, deleteDeveloperIDModel, putDeveloperModel, pathDeveloperModel} = require('../models/developer')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
@@ -26,11 +26,55 @@ module.exports = {
             })
         } catch (error) {
             console.log(error)
-            response.status(400).send({
+                response.status(400).send({
                 success: false,
                 message: 'Bad Request!'
             })
             
+             
+        }
+    },
+    loginDeveloper : async (request, response)=>{
+        try {
+            const { email, password} = request.body
+            const checkDataDeveloper = await checkDeveloperModel(email)
+            if (checkDataDeveloper.length >= 1) {
+                const checkPassword = bcrypt.compareSync(
+                    password, 
+                    checkDataDeveloper[0].password)
+           if(checkPassword){
+               const{id_dev,name,email,password} = checkDataDeveloper[0]
+               let payload = {
+                   id_dev,
+                   name,
+                   email,
+                   password
+               }
+               const token = jwt.sign(payload, process.env.JWT_KEY, {expiresIn : '1h'})
+               payload = { ...payload, token}
+               response.send({
+                   success: true,
+                   message: 'Success Login!',
+                   data: payload
+               })
+           }else{
+            response.status(400).send({
+                success: false,
+                message: 'Wrong Password!'
+            })
+           }
+            }else{
+                response.status(400).send({
+                    success: false,
+                    message: 'Email/Account not Register'
+                })
+            }
+        } catch (error) {
+            console.log(error)
+            response.status(400).send({
+                success: false,
+                message: 'Bad Request!'
+            })
         }
     },
     getDataDeveloper : (req, res)=>{

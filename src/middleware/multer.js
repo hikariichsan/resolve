@@ -21,7 +21,7 @@ if (file.mimetype === 'image/jpeg' || file.mimetype == 'image/png') {
 
 const limits = {fileSize: 1024 * 1024 * 1}
 
-let upload = multer({storage, fileFilter, limits}).single('image')
+let upload = multer({storage, fileFilter, limits}).single( 'image')
 
 const uploadFilter = (request, response, next)=>{
     upload(request,request, function (err) {

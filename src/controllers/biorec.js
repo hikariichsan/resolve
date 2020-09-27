@@ -2,24 +2,31 @@ const db = require('../helpers/db')
 const {createBioRecModel, getBioRecModel, selectBioRecModel, deleteBioRecIDModel, putBioRecModel, pathBioRecModel} = require('../models/biorec')
 
 module.exports = {
-    createBioRec : (req, res) => {
+    createBioRec : async (req, res) => {
+        try{
         const {id_recruiter,name_company, sector,city,description, instagram, image,linkedin} = req.body
-        if (id_recruiter && name_company &&  sector && city && description && instagram && image &&linkedin ){
-            createBioRecModel([id_recruiter,name_company, sector,city,description, instagram, image,linkedin], result=>{
-                console.log(result);
-res.status(201).send({
-    success:true,
-    message: 'Bio Recruiter has been created',
-    data: req.body
-})
-            })
-        }else{
-            res.status(500).send({
-                success:false,
-                message: 'All field must be filled'
-            })
+        const setData = {id_recruiter,
+            name_company,
+            sector,
+            city,
+            description,
+            instagram,
+            linkedin,
+            image: req.file === undefined ? '' : req.file.filename
         }
-
+            const resultCreate = await createBioRecModel(setData)
+            res.status(200).send({
+                success: true,
+                message:'Product Created',
+                data: setData
+            })
+             } catch (error) {
+                 res.status(500).send({
+                     success: false,
+                     message: 'Bad Request'
+                 })
+                 
+             }
         
     },
     getBioRec : (req, res)=>{

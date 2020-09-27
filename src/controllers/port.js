@@ -2,22 +2,32 @@ const db = require('../helpers/db')
 const {createPortModel, getPortModel, selectPortModel, deletePortModel, putPortModel, patchPortModel} = require('../models/port')
 
 module.exports = {
-    createport : (req, res) => {
-        const {name_app, description, link_repo, link_publish, workplace_related, base_type, photo, id_bio_dev} = req.body
-        if (name_app && description && link_repo && link_publish && workplace_related && base_type && photo && id_bio_dev ){
-            createPortModel([name_app, description, link_repo, link_publish, workplace_related, base_type, photo, id_bio_dev], result=>{
-                console.log(result);
-res.status(201).send({
-    success:true,
-    message: 'Portfolio has been created',
-    data: req.body
-})
-            })
-        }else{
+    createport : async (req, res) => {
+        try{
+        const {name_app, description, link_repo, link_publish, workplace_related, base_type, id_bio_dev} = req.body
+        const setData = {
+            name_app,
+            description,
+            link_repo,
+            link_publish,
+            workplace_related,
+            base_type,
+            id_bio_dev,
+            image: req.file === undefined ? '' : req.file.filename
+        
+        }
+            const resultCreate = await createPortModel(setData)
+       res.status(200).send({
+           success: true,
+           message:'Portfolio Created',
+           data: setData
+       })
+        } catch (error) {
             res.status(500).send({
-                success:false,
-                message: 'All field must be filled'
+                success: false,
+                message: 'Bad Request'
             })
+            
         }
 
         

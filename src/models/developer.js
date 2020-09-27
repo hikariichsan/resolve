@@ -1,3 +1,4 @@
+const { response } = require('express')
 const db = require('../helpers/db')
 
 module.exports ={
@@ -11,12 +12,27 @@ module.exports ={
                    }
                    delete newResult.password
                    resolve(newResult)
+                }else if(error.code == 'ER_DUP_ENTRY' || error.errorno == 1062)
+                {
+                    console.log('Here you can handle duplication')
+
                 }else{
                     reject(new Error(error))
                 }
             })
         })
        
+    },
+    checkDeveloperModel: (email) => {
+        return new Promise((resolve, reject)=>{
+            db.query('SELECT id_dev, email, password, name,no_hp FROM developer WHERE email = ?',email,(error, result) =>{
+                if(!error){
+                    resolve(result)
+                }else{
+                    reject(new Error(error))
+                }
+            })
+        })
     },
     getDataDeveloperModel : (searchKey,searchValue,limit,offset, cb)=>{
         const query =`SELECT * FROM developer WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`

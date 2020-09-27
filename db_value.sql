@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 24 Sep 2020 pada 10.38
+-- Waktu pembuatan: 27 Sep 2020 pada 19.43
 -- Versi server: 10.4.11-MariaDB
 -- Versi PHP: 7.4.3
 
@@ -52,7 +52,8 @@ INSERT INTO `bio_dev` (`id_bio_dev`, `name`, `job_desk`, `status_job`, `work_pla
 (4, 'bima', 'Web Developer', 'Freelance', 'Jl.Trans Kalimantan', 'Mampu di mana pun', 'Ketapang', 'a.jpg', 17, '2020-09-21 01:12:47', '2020-09-21 01:12:47'),
 (5, 'Ahmad', 'Web Developer', 'Freelance', 'Jl.pinyuh', 'pandai memanajemen', 'Sanggau', 'a.jpg', 18, '2020-09-21 01:14:03', '2020-09-21 01:14:03'),
 (6, 'Rendra', 'Mobile', 'Freelance', 'Jl.Martadinata', 'kuat menantap laptop', 'Sungai Kakap', 'a.jpg', 19, '2020-09-21 01:15:12', '2020-09-21 01:15:12'),
-(7, 'Hizmi', 'Mobile Developer', 'Full Time', 'Jl.lumangun', 'bisa bikin mobile dengan indah', 'Bansir Raya', 'a.jpg', 20, '2020-09-21 01:17:28', '2020-09-21 01:17:28');
+(7, 'Hizmi', 'Mobile Developer', 'Full Time', 'Jl.lumangun', 'bisa bikin mobile dengan indah', 'Bansir Raya', 'a.jpg', 20, '2020-09-21 01:17:28', '2020-09-21 01:17:28'),
+(8, 'ahmad', 'Mobile Developer', 'Full Time', 'Jl.lumangun', 'pekerja keras', 'Bansir Raya', 'image-1601196380018-avatar.png', 21, '2020-09-27 08:46:20', '2020-09-27 08:46:20');
 
 -- --------------------------------------------------------
 
@@ -79,7 +80,8 @@ CREATE TABLE `bio_recuiter` (
 --
 
 INSERT INTO `bio_recuiter` (`id_bio_rec`, `name_company`, `sector`, `city`, `description`, `instagram`, `image`, `linkedin`, `id_recruiter`, `created_at`, `updated_at`) VALUES
-(2, 'DENNIS JARWO', 'Finansial', 'Sanggau', 'yox', 'sahabat_kita', 'b.jpg', 'sahabatkita', 5, NULL, NULL);
+(2, 'DENNIS JARWO', 'Finansial', 'Sanggau', 'yox', 'sahabat_kita', 'b.jpg', 'sahabatkita', 5, NULL, NULL),
+(3, 'DR.BOTANI', 'Healty', 'Bogor', 'Perawatan kesehatan dengan Botani', 'dr.botani', 'image-1601197054609-avatar3.png', 'botani-doc', 14, '2020-09-27 08:57:34', '2020-09-27 08:57:34');
 
 -- --------------------------------------------------------
 
@@ -145,7 +147,7 @@ CREATE TABLE `port_dev` (
   `link_repo` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `workplace_related` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `base_type` enum('Web Developer','Mobile Developer') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `photo` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `id_bio_dev` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -153,8 +155,20 @@ CREATE TABLE `port_dev` (
 -- Dumping data untuk tabel `port_dev`
 --
 
-INSERT INTO `port_dev` (`id_port`, `name_app`, `description`, `link_publish`, `link_repo`, `workplace_related`, `base_type`, `photo`, `id_bio_dev`) VALUES
-(1, 'buah hati ku unyu', 'guide mengasuh bayi dan merawat', 'asd', 'asd', 'oke', 'Mobile Developer', 'a.png', 2);
+INSERT INTO `port_dev` (`id_port`, `name_app`, `description`, `link_publish`, `link_repo`, `workplace_related`, `base_type`, `image`, `id_bio_dev`) VALUES
+(1, 'buah hati ku unyu', 'guide mengasuh bayi dan merawat', 'asd', 'asd', 'oke', 'Mobile Developer', 'a.png', 2),
+(3, 'simanja', 'manajemen sipil', 'asd', 'asd', 'oke', 'Web Developer', '', 2),
+(4, 'simanja', 'manajemen sipil', 'asd', 'asd', 'oke', 'Web Developer', '', 2),
+(5, 'simanja', 'manajemen sipil', 'asd', 'asd', 'oke', 'Web Developer', '', 2),
+(6, 'simanja', 'manajemen sipil', 'asd', 'asd', 'oke', 'Web Developer', 'photo-1601192506999-n2f2014.jpg', 2),
+(7, 'simanja', 'manajemen sipil', 'asd', 'asd', 'oke', 'Web Developer', '', 2),
+(8, 'simanja', 'manajemen sipil', 'asd', 'asd', 'oke', 'Web Developer', 'photo-1601192592317-n2f2014.jpg', 2),
+(9, 'simanja', 'manajemen sipil', 'asd', 'asd', 'oke', 'Web Developer', '', 2),
+(10, 'simanja', 'manajemen sipil', 'asd', 'asd', 'oke', 'Web Developer', '', 2),
+(11, 'N2F', 'Game Hunter Wild', 'playstore', 'github', 'playto.group', 'Web Developer', '', 2),
+(12, 'N2F', 'Game Hunter Wild', 'playstore', 'github', 'playto.group', 'Web Developer', '', 2),
+(13, 'N2F', 'Game Hunter Wild', 'playstore', 'github', 'playto.group', 'Web Developer', 'photo-1601193424139-n2f2014.jpg', 2),
+(14, 'IBL APPS', 'memberikan para penonton jadwal tanding IBL', 'playstore', 'github', 'Patriotic Group', 'Mobile Developer', 'image-1601194202273-ibl.png', 2);
 
 -- --------------------------------------------------------
 
@@ -183,7 +197,10 @@ INSERT INTO `project` (`id_project`, `name_project`, `location`, `description`, 
 (3, 'APP PENSIL', 'Jl.Veteran', 'Aplikasi Data Penduduk Sipil', 3, 4, 'p.png', '2020-09-20 09:13:58', '2020-09-20 09:13:58'),
 (4, 'APP PENSIL', 'Jl.Veteran', 'Aplikasi Data Penduduk Sipil', 3, 4, 'undefined-1600909229377-neo.png', '2020-09-24 01:00:29', '2020-09-24 01:00:29'),
 (5, 'APP PENSIL', 'Jl.Veteran', 'Aplikasi Data Penduduk Sipil', 3, 4, 'undefined-1600909598753-n2f.png', '2020-09-24 01:06:38', '2020-09-24 01:06:38'),
-(6, 'APP N2F', 'jl. veteran', 'Aplikasi Management', 3, 4, 'image-1600909877516-n2f.png', '2020-09-24 01:11:17', '2020-09-24 01:11:17');
+(6, 'APP N2F', 'jl. veteran', 'Aplikasi Management', 3, 4, 'image-1600909877516-n2f.png', '2020-09-24 01:11:17', '2020-09-24 01:11:17'),
+(7, 'FUTURE', 'jl. kalimatan', 'Membangun Fasilitas Teknologi', 3, 4, '', '2020-09-27 07:53:48', '2020-09-27 07:53:48'),
+(8, 'FUTURE', 'jl. kalimatan', 'Membangun Fasilitas Teknologi', 3, 4, '', '2020-09-27 07:59:56', '2020-09-27 07:59:56'),
+(9, 'FUTURE', 'jl. kalimatan', 'Membangun Fasilitas Teknologi', 3, 4, 'image-1601193796831-elg.png', '2020-09-27 08:03:16', '2020-09-27 08:03:16');
 
 -- --------------------------------------------------------
 
@@ -271,7 +288,10 @@ CREATE TABLE `skill_dev` (
 INSERT INTO `skill_dev` (`id_skill`, `name_skill`, `id_bio_dev`) VALUES
 (1, 'kotlin', 2),
 (3, 'ruby', 2),
-(4, 'node js', 2);
+(4, 'node js', 2),
+(5, 'node js', 5),
+(6, 'Express js', 5),
+(7, 'Veu js', 5);
 
 --
 -- Indexes for dumped tables
@@ -346,19 +366,19 @@ ALTER TABLE `skill_dev`
 -- AUTO_INCREMENT untuk tabel `bio_dev`
 --
 ALTER TABLE `bio_dev`
-  MODIFY `id_bio_dev` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_bio_dev` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT untuk tabel `bio_recuiter`
 --
 ALTER TABLE `bio_recuiter`
-  MODIFY `id_bio_rec` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_bio_rec` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `developer`
 --
 ALTER TABLE `developer`
-  MODIFY `id_dev` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_dev` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
 
 --
 -- AUTO_INCREMENT untuk tabel `exp_dev`
@@ -370,13 +390,13 @@ ALTER TABLE `exp_dev`
 -- AUTO_INCREMENT untuk tabel `port_dev`
 --
 ALTER TABLE `port_dev`
-  MODIFY `id_port` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_port` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT untuk tabel `project`
 --
 ALTER TABLE `project`
-  MODIFY `id_project` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_project` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT untuk tabel `project_developer`
@@ -394,7 +414,7 @@ ALTER TABLE `recruiter`
 -- AUTO_INCREMENT untuk tabel `skill_dev`
 --
 ALTER TABLE `skill_dev`
-  MODIFY `id_skill` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_skill` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

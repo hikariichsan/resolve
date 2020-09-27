@@ -1,20 +1,19 @@
 const db = require('../helpers/db')
 
 module.exports ={
-    createBioRecModel : (arr, cb) =>{
-        const query =`INSERT INTO bio_recuiter (id_recruiter,name_company, sector,city,description, instagram, image,linkedin) VALUES(${arr[0]},'${arr[1]}','${arr[2]}','${arr[3]}','${arr[4]}','${arr[5]}','${arr[6]}','${arr[7]}')`
-        db.query(query, (err, result,fields)=>{
-            if(!err){
-                cb(result) 
-              }else{    
-                  result.send({
-                      success: false,
-                      message: 'Cant to created  :' + err
-                  })
-      
-              }
-        })
-    },
+    
+    createBioRecModel  : (setData) =>{
+            return new Promise((resolve, reject)=>{
+                const query = 'INSERT INTO bio_recuiter SET ?'
+                db.query(query, setData, (err, result, _fields)=>{
+                    if(!err){
+                        resolve(result)
+                    }else{
+                        reject(new Error(err))
+                    }
+                })
+            })
+          },
     getBioRecModel : (searchKey,searchValue,limit,offset, cb)=>{
         const query =`SELECT * FROM bio_recuiter WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`
         db.query(query,(err,result,fields)=>{

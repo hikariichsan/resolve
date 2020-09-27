@@ -1,22 +1,21 @@
 const db = require('../helpers/db')
 
 module.exports ={
-    createBioDevModel : (arr, cb) =>{
-        const query =`INSERT INTO bio_dev (id_dev,name, status_job,job_desk,image, city, work_place,description) VALUES('${arr[0]}','${arr[1]}',${arr[2]},'${arr[3]}','${arr[4]}','${arr[5]}','${arr[6]}','${arr[7]}')`
-        db.query(query, (err, result,fields)=>{
-            if(!err){
-                cb(result) 
-              }else{
-                  res.send({
-                      success: false,
-                      message: 'Cant to created  :' + err
-                  })
-      
-              }
+    createBioDevModel : (setData) =>{
+        return new Promise((resolve, reject)=>{
+            const query = 'INSERT INTO bio_dev SET ?'
+            db.query(query, setData, (err, result, _fields)=>{
+                if(!err){
+                    resolve(result)
+                }else{
+                    reject(new Error(err))
+                }
+            })
         })
-    },
+      },
     getBioDevModel : (searchKey,searchValue,limit,offset, cb)=>{
-        const query =`SELECT bio_dev.*,exp_dev.*,port_dev.* FROM ((bio_dev LEFT JOIN exp_dev ON bio_dev.id_bio_dev = exp_dev.id_bio_dev)LEFT JOIN port_dev ON bio_dev.id_bio_dev = port_dev.id_bio_dev) WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`
+        const query =`SELECT d.*, GROUP_CONCAT(s.name_skill) AS skill FROM bio_dev d LEFT JOIN skill_dev s ON d.id_bio_dev = s.id_bio_dev 
+         WHERE ${searchKey} LIKE '%${searchValue}%' GROUP BY(d.id_bio_dev) LIMIT ${limit} OFFSET ${offset}`
         db.query(query,(err,result,fields)=>{
             if(!err){
               cb(result) 
