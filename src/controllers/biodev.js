@@ -1,10 +1,10 @@
 const db = require('../helpers/db')
-const {createBioDevModel, getBioDevModel, selectBioDevModel, deleteBioDevIDModel, putBioDevModel, pathBioDevModel} = require('../models/biodev')
+const {createBioDevModel,getBioDevByIDModel, getBioDevModel, selectBioDevModel, deleteBioDevIDModel, putBioDevModel, pathBioDevModel} = require('../models/biodev')
 
 module.exports = {
     createBioDev : async (req, res) => {
         try{
-        const {id_dev,name, status_job,job_desk,image, city, work_place,description} = req.body
+        const {id_dev,name, status_job,job_desk, city, work_place,description} = req.body
         const setData = {
             name,
             id_dev,
@@ -19,7 +19,7 @@ module.exports = {
                 const resultCreate = await createBioDevModel(setData)
                 res.status(200).send({
                     success: true,
-                    message:'Product Created',
+                    message:'Bio Developer Created',
                     data: setData
                 })
                  } catch (error) {
@@ -32,7 +32,7 @@ module.exports = {
         
     },
     getBioDev : (req, res)=>{
-        let {page, limit, search } = req.query
+        let {page,order,sort, limit, search } = req.query
     
         let searchKey = ''
         let searchValue = ''
@@ -57,7 +57,7 @@ module.exports = {
     
     const offset = (page-1)*limit
 
-    getBioDevModel(searchKey,searchValue,limit,offset, result => {
+    getBioDevModel(searchKey,order,sort,searchValue,limit,offset, result => {
         if(result.length){
                         res.status(201).send({
                             success:true,
@@ -73,6 +73,24 @@ module.exports = {
     })
     
    
+    },
+    getBioDevByID : (req,res)=>{
+        const {id} = req.params
+        getBioDevByIDModel(id,result=>{
+            if (result.length){
+                        res.send({
+                            success: true,
+                            message:`data Bio id ${id}`,
+                            data: result[0]
+                        })
+                    }else{
+                        res.send({
+                            success:false,
+                            message: `data Bio ${id} not found`
+                        })
+                        
+                    }
+        })
     },
     deleteBioDev : (req,res)=>{
             const idBioDev = req.params.id

@@ -25,7 +25,7 @@ module.exports ={
     },
     checkDeveloperModel: (email) => {
         return new Promise((resolve, reject)=>{
-            db.query('SELECT id_dev, email, password, name,no_hp FROM developer WHERE email = ?',email,(error, result) =>{
+            db.query('SELECT id_dev, email, password, name,role,no_hp FROM developer WHERE email = ?',email,(error, result) =>{
                 if(!error){
                     resolve(result)
                 }else{

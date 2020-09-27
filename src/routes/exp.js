@@ -1,12 +1,13 @@
 const { Router } = require('express')
 const {createexp, getexp, deleteexp, putexp, patchexp} = require('../controllers/exp')
+const { authorizationDev, authAll} = require('../middleware/auth')
 
 const router = Router()
 
-router.post('/', createexp)
-router.get('/', getexp)
-router.put('/:id', putexp)
-router.delete('/:id', deleteexp)
-router.patch('/:id', patchexp)
+router.post('/',authorizationDev, createexp)
+router.get('/',authAll, getexp)
+router.put('/:id',authorizationDev, putexp)
+router.delete('/:id',authorizationDev, deleteexp)
+router.patch('/:id',authorizationDev, patchexp)
 
 module.exports= router

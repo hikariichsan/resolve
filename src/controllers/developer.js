@@ -14,6 +14,7 @@ module.exports = {
             email,
             password : encryptPassword,
             no_hp,
+            role: 2,
             created_at: new Date()
         }
         try {
@@ -43,12 +44,12 @@ module.exports = {
                     password, 
                     checkDataDeveloper[0].password)
            if(checkPassword){
-               const{id_dev,name,email,password} = checkDataDeveloper[0]
+               const{id_dev,name,role,email,password} = checkDataDeveloper[0]
                let payload = {
                    id_dev,
                    name,
                    email,
-                   password
+                   role
                }
                const token = jwt.sign(payload, process.env.JWT_KEY, {expiresIn : '1h'})
                payload = { ...payload, token}

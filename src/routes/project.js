@@ -5,7 +5,7 @@ const uploadImage = require('../middleware/multer')
 
 const router = Router()
 
-router.post('/', uploadImage,createProject)
+router.post('/', authorization,uploadImage,createProject)
 router.get('/', authorization ,getProject)
 router.put('/:id', authorization,putProject)
 router.delete('/:id',authorization ,deleteProject)

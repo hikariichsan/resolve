@@ -26,7 +26,7 @@ module.exports ={
     },
     checkRecruiterModel: (email) => {
         return new Promise((resolve, reject)=>{
-            db.query('SELECT id_recruiter, email, password, name, company,no_hp FROM recruiter WHERE email = ?',email,(error, result) =>{
+            db.query('SELECT id_recruiter, email, password, name,role, company,no_hp FROM recruiter WHERE email = ?',email,(error, result) =>{
                 if(!error){
                     resolve(result)
                 }else{

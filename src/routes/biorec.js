@@ -1,13 +1,14 @@
 const { Router } = require('express')
 const {createBioRec, getBioRec, deleteBioRec, putBioRec, patchBioRec} = require('../controllers/biorec')
 const uploadImage = require('../middleware/multer')
+const {authorization} = require('../middleware/auth')
 
 const router = Router()
 
-router.post('/',uploadImage, createBioRec)
-router.get('/', getBioRec)
-router.put('/:id', putBioRec)
-router.delete('/:id', deleteBioRec)
-router.patch('/:id', patchBioRec)
+router.post('/',authorization,uploadImage, createBioRec)
+router.get('/',authorization, getBioRec)
+router.put('/:id',authorization, putBioRec)
+router.delete('/:id',authorization, deleteBioRec)
+router.patch('/:id',authorization, patchBioRec)
 
 module.exports= router

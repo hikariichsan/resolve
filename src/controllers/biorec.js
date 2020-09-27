@@ -4,7 +4,7 @@ const {createBioRecModel, getBioRecModel, selectBioRecModel, deleteBioRecIDModel
 module.exports = {
     createBioRec : async (req, res) => {
         try{
-        const {id_recruiter,name_company, sector,city,description, instagram, image,linkedin} = req.body
+        const {id_recruiter,name_company, sector,city,description, instagram,linkedin} = req.body
         const setData = {id_recruiter,
             name_company,
             sector,

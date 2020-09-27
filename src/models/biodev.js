@@ -13,9 +13,17 @@ module.exports ={
             })
         })
       },
-    getBioDevModel : (searchKey,searchValue,limit,offset, cb)=>{
+    getBioDevModel : (searchKey,sort,order,searchValue,limit,offset, cb)=>{
+        let sort_order = ''
+        if (sort != null){
+            if (order != null){
+                sort_order = `ORDER BY ${sort} ${order}`
+            }else{
+                sort_order = 'ORDER BY name ASC'
+            }
+        }
         const query =`SELECT d.*, GROUP_CONCAT(s.name_skill) AS skill FROM bio_dev d LEFT JOIN skill_dev s ON d.id_bio_dev = s.id_bio_dev 
-         WHERE ${searchKey} LIKE '%${searchValue}%' GROUP BY(d.id_bio_dev) LIMIT ${limit} OFFSET ${offset}`
+         WHERE ${searchKey} LIKE '%${searchValue}%' GROUP BY(d.id_bio_dev) ${sort_order} LIMIT ${limit} OFFSET ${offset}`
         db.query(query,(err,result,fields)=>{
             if(!err){
               cb(result) 
@@ -26,6 +34,11 @@ module.exports ={
                 })
     
             }
+        })
+    },
+    getBioDevByIDModel: (id, cb) =>{
+        db.query(`SELECT * FROM bio_dev WHERE id_bio_dev = ${id}`, (err, result, field)=>{
+        cb(result)
         })
     },
     selectBioDevModel : (idBioDev,cb)=>{

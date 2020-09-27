@@ -1,13 +1,14 @@
 const { Router } = require('express')
 const {createport, getport, deleteport, putport, patchport} = require('../controllers/port')
 const uploadImage = require('../middleware/multer')
+const { authorizationDev, authAll} = require('../middleware/auth')
 
 const router = Router()
 
-router.post('/', uploadImage,createport)
-router.get('/', getport)
-router.put('/:id', putport)
-router.delete('/:id', deleteport)
-router.patch('/:id', patchport)
+router.post('/', authorizationDev,uploadImage,createport)
+router.get('/', authAll,getport)
+router.put('/:id', authorizationDev,putport)
+router.delete('/:id', authorizationDev,deleteport)
+router.patch('/:id', authorizationDev,patchport)
 
 module.exports= router
