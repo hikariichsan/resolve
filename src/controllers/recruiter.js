@@ -34,8 +34,8 @@ module.exports = {
                 success: false,
                 message: 'Bad Request!'
             })
-            
-        }
+            }
+        
     },
 
     loginRecruiter : async (request, response)=>{
