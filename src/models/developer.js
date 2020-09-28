@@ -12,9 +12,9 @@ module.exports ={
                    }
                    delete newResult.password
                    resolve(newResult)
-                // }else if(error.code == 'ER_DUP_ENTRY' || error.errorno == 1062)
-                // {
-                //     console.log('Here you can handle duplication')
+                }else if(error.code == 'ER_DUP_ENTRY' || error.errorno == 1062)
+                {
+                    console.log('Here you can handle duplication')
 
                 }else{
                     reject(new Error(error))
