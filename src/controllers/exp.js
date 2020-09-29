@@ -2,17 +2,22 @@ const db = require('../helpers/db')
 const {createexpModel, getexpModel, selectexpModel, deleteexpIDModel, putexpModel, patchexpModel} = require('../models/exp')
 
 module.exports = {
-    createexp : (req, res) => {
+    createexp : async (req, res) => {
         const {name_company,position,description,start,end, id_bio_dev} = req.body
         if (name_company && position && description && start && end &&  id_bio_dev){
-            createexpModel([name_company,position,description,start,end, id_bio_dev], result=>{
-                console.log(result);
-res.status(201).send({
-    success:true,
-    message: 'exp has been created',
-    data: req.body
-})
+           try {
+           await createexpModel([name_company,position,description,start,end, id_bio_dev])
+           res.status(201).send({
+            success:true,
+            message: 'exp has been created',
+            data: req.body
+        })
+           } catch (error) {
+            res.send({
+                success:false,
+                message: 'Bad Required'
             })
+           }
         }else{
             res.status(500).send({
                 success:false,
@@ -22,7 +27,7 @@ res.status(201).send({
 
         
     },
-    getexp : (req, res)=>{
+    getexp : async (req, res)=>{
         let {page, limit, search } = req.query
     
         let searchKey = ''
@@ -47,126 +52,145 @@ res.status(201).send({
         }
     
     const offset = (page-1)*limit
-
-    getexpModel(searchKey,searchValue,limit,offset, result => {
-        if(result.length){
-                        res.status(201).send({
-                            success:true,
-                            message:'List exp',
-                            data: result
-                        })
-                    }else{
-                        res.send({
-                            success: true,
-                            message: 'There is no item list'
-                        })
-                    }
+try {
+    const result =  await getexpModel(searchKey,searchValue,limit,offset)
+    if(result.length){
+        res.status(201).send({
+            success:true,
+            message:'List exp',
+            data: result
+        })
+    }else{
+        res.send({
+            success: true,
+            message: 'There is no item list'
+        })
+    }
+} catch (error) {
+    res.send({
+        success: false,
+        message: 'Bad required'
     })
-    
-   
+}
+  
+      
+
     },
-    deleteexp : (req,res)=>{
+    deleteexp : async (req,res)=>{
             const idexp = req.params.id
-            selectexpModel(idexp, result =>{
-            if (result.length){
-                deleteexpIDModel(idexp, result=>{
-                    if (result.affectedRows){
+            try {
+                const select = await selectexpModel(idexp)
+                if (select.length) {
+                    const result = await deleteexpIDModel(idexp)
+                    if (result.affectedRows) {
                         res.send({
                             success:true,
                             message:`exp ${idexp} has been deleted`,
                             data: result
                         })
-                    }else{
+                    } else {
                         res.send({
                             success: false,
                             message: 'Data filed to delete'
                         })
                     }
-                })
-            }else{
+                } else {
+                    res.send({
+                        success:false,
+                        message:'Data not Found'
+                    })
+                }
+            } catch (error) {
                 res.send({
                     success:false,
-                    message:'Data not Found'
+                    message:'Bad required'
                 })
             }
-            })
+          
         },
-        putexp :(req,res)=>{
+        putexp : async (req,res)=>{
                 const idexp = req.params.id
                 const {name_company,position,description,start,end, id_bio_dev} =req.body
                 if (name_company.trim() &&position.trim() &&description.trim() &&start.trim() &&end.trim() && id_bio_dev.trim()){
-                    selectexpModel(idexp, result=>{
-                    if (result.length){
                         const data = Object.entries(req.body).map(item =>{
                             return parseInt(item[1]) > 0 ? `${item[0]} = ${item[1]}` : `${item[0]}='${item[1]}'`
                         })
-                        console.log(data);
-               putexpModel (idexp,data, result =>{
-                    console.log(result);
-                            if(result.affectedRows){
-                                res.send({
-                                    success: true,
-                                    message: `exp with id ${idexp} has been Update`,
-                                })
-                                }else{
-                                res.send({
-                                    success: false,
-                                    message: 'All field must be filled'
-                                    })
+                        try {
+                            const select = await selectexpModel(idexp)
+                            if (select.length) {
+                                const result = await patchexpModel(idexp,data)
+                                if (result.affectedRows) {
+                                 res.send({
+                                     success: true,
+                                     message: `Experience with id ${idexp} has been Update`,
+                                 })
+                                } else {
+                                 res.send({
+                                     success: false,
+                                     message: 'Failed to Update'
+                                     })
                                 }
-                })
-            }else{
-                    res.send({
-                        success: false,
-                        message: 'exp not found'
-                        })
-                    }
-                })
-            }else{
-                res.send({
-                    success: false,
-                    message: 'Not Found'
-                        })
-                    }
-            },
-            patchexp : (req,res)=>{
+                            } else {
+                             res.send({
+                                 success: false,
+                                 message: 'Experience not found'
+                             })
+                            }
+                        } catch (error) {
+                         res.send({
+                             success: false,
+                             message: 'Bad Required'
+                         })
+                     }
+             }else{
+                 res.send({
+                     success: false,
+                     message: 'All Fields must be filled'
+                         })
+                     }
+                    },
+            patchexp : async (req,res)=>{
                     const idexp = req.params.id
                     const {name_company='',position='',description='',start='',end='', id_bio_dev=''} = req.body
                 if (name_company.trim()|| position.trim()|| description.trim()|| start.trim()|| end.trim()||  id_bio_dev.trim()) {
-                    selectexpModel(idexp, result=>{
-                if (result.length){
+
                         const data = Object.entries(req.body).map(item =>{
                             return parseInt(item[1]) > 0 ? `${item[0]} = ${item[1]}` : `${item[0]}='${item[1]}'`
                         })
-                        console.log(data);
-                       patchexpModel(idexp,data,result=>{
-                            console.log(result);
-                    if (result.affectedRows){
-                        res.send({
-                            success: true,
-                            message: `exp with id ${idexp} has been updated`,
-                        })
-                    }else{
-                        res.send({
-                            success: false,
-                            message: 'filed updated'
-                        })
+                        try {
+                            const select = await selectexpModel(idexp)
+                            if (select.length) {
+                                const result = await patchexpModel(idexp,data)
+                                if (result.affectedRows) {
+                                 res.send({
+                                     success: true,
+                                     message: `Experience with id ${idexp} has been Update`,
+                                 })
+                                } else {
+                                 res.send({
+                                     success: false,
+                                     message: 'Failed to Update'
+                                     })
+                                }
+                            } else {
+                             res.send({
+                                 success: false,
+                                 message: 'Experience not found'
+                             })
+                            }
+                        } catch (error) {
+                         res.send({
+                             success: false,
+                             message: 'Bad Required'
+                         })
+                     }
+             }else{
+                 res.send({
+                     success: false,
+                     message: 'Field must be filled'
+                         })
+                     }
                     }
-                        })  
-                  } else{
-                    res.send({
-                        success: false,
-                        message: 'exp not found'
-                        })
-                    }
-                })
-                    }else{
-                    res.send({
-                        success: false,
-                        message: 'erorr'
-                    })
-                    }
-                }
                 
                
 }

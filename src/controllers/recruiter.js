@@ -23,19 +23,25 @@ module.exports = {
         try {
             const result = await postRecruiterModel(setData)
             console.log(result)
+            if(result == undefined){
+                response.send({
+                success: true,
+                message: 'Email Registered'})
+            }else{
             response.send({
                 success: true,
-                message: 'Success Register User!',
+                message: 'Success Register Developer!',
                 data: result
             })
+        }
         } catch (error) {
             console.log(error)
             response.status(400).send({
                 success: false,
                 message: 'Bad Request!'
             })
-            }
-        
+
+        }
     },
 
     loginRecruiter : async (request, response)=>{
@@ -82,7 +88,7 @@ module.exports = {
         }
     },
 
-    getDataRecruiter : (req, res)=>{
+    getDataRecruiter : async (req, res)=>{
         let {page, limit, search } = req.query
     
         let searchKey = ''
@@ -107,127 +113,148 @@ module.exports = {
         }
     
     const offset = (page-1)*limit
-
-    getDataRecruiterModel(searchKey,searchValue,limit,offset, result => {
+    try {
+        const result = await getDataRecruiterModel(searchKey,searchValue,limit,offset)
         if(result.length){
-                        res.status(201).send({
-                            success:true,
-                            message:'List Recruiter',
-                            data: result
-                        })
-                    }else{
-                        res.send({
-                            success: true,
-                            message: 'There is no item list'
-                        })
-                    }
-    })
-    
-   
+            res.status(201).send({
+                success:true,
+                message:'List Recruiter',
+                data: result
+            })
+        }else{
+            res.send({
+                success: true,
+                message: 'There is no item list'
+            })
+        }
+
+    } catch (error) {
+        res.send({
+            success: false,
+            message: 'Bad Request'
+        })
+    }
     },
-    deleteRecruiter : (req,res)=>{
+    deleteRecruiter : async (req,res)=>{
             const idRec = req.params.id
-            selectRecruiterModel(idRec, result =>{
-            if (result.length){
-                deleteRecruiterIDModel(idRec, result=>{
-                    if (result.affectedRows){
+            try {
+                const select = await selectRecruiterModel(idRec)
+                if (select.length) {
+                    const result = await deleteRecruiterIDModel(idRec)
+                    if (result.affectedRows) {
                         res.send({
                             success:true,
                             message:`Recruiter ${idRec} has been deleted`,
                             data: result
                         })
-                    }else{
+                    } else {
                         res.send({
                             success: false,
                             message: 'Data filed to delete'
                         })
                     }
-                })
-            }else{
+                    
+                } else {
+                    res.send({
+                        success: false,
+                        message: 'Not Found'
+                    })
+                    
+                }
+            } catch (error) {
                 res.send({
-                    success:false,
-                    message:'Data not Found'    
+                    success: false,
+                    message: 'Bad Required'
                 })
             }
-            })
+          
         },
-        putRecruiter :(req,res)=>{
+        putRecruiter : async (req,res)=>{
                 const idRec = req.params.id
                 const {name, email,company,position, password, no_hp} =req.body
                 if (name.trim() && email.trim() && company.trim() && position.trim() && password.trim() && no_hp.trim()){
-                    selectRecruiterModel(idRec, result=>{
-                    if (result.length){
                         const data = Object.entries(req.body).map(item =>{
                             return parseInt(item[1]) > 0 ? `${item[0]} = ${item[1]}` : `${item[0]}='${item[1]}'`
                         })
-                        console.log(data)
-               putRecruiterModel (idRec,data, result =>{
-                   console.log(result);
-                            if(result.affectedRows){
+                     try {
+                         const select = await selectRecruiterModel(idRec)
+                         if (select.length) {
+                             const result = await putRecruiterModel(data,idRec)
+                             if (result.affectedRows) {
                                 res.send({
                                     success: true,
-                                    message: `Recruiter with id ${idRec} has been created`,
+                                    message: `Recruiter with id ${idRec} has been Update`
                                 })
-                                }else{
+                             } else {
                                 res.send({
-                                    success: false,
-                                    message: 'All field must be filled'
-                                    })
-                                }
-                })
-            }else{
-                    res.send({
-                        success: false,
-                        message: 'Recruiter not found'
-                        })
-                    }
-                })
+                                    success: true,
+                                    message: `Failed Update`
+                                })
+                             }
+                         } else {
+                            res.send({
+                                success: true,
+                                message: `Not Found`
+                            })
+                         }
+                         
+                     } catch (error) {
+                        res.send({
+                            success: false,
+                            message: 'Bad Required'
+                            })
+                     }
+         
             }else{
                 res.send({
                     success: false,
-                    message: 'Not Found'
-                        })
+                    message: 'All field must be filled'
+                    })
                     }
             },
-            patchRecruiter : (req,res)=>{
+            patchRecruiter : async (req,res)=>{
                     const idRec  = req.params.id
                     const {name ='', email='', company='',position='',password='',no_hp=''} = req.body
                 if (name.trim() || email.trim() || company.trim() || position.trim() || password.trim() || no_hp.trim() ) {
-                    selectRecruiterModel(idRec, result=>{
-                if (result.length){
                         const data = Object.entries(req.body).map(item =>{
                             return parseInt(item[1]) > 0 ? `${item[0]} = ${item[1]}` : `${item[0]}='${item[1]}'`
                         })
-                        console.log(data);
-                       pathRecruiterModel(idRec,data,result=>{
-                            console.log(result);
-                    if (result.affectedRows){
-                        res.send({
-                            success: true,
-                            message: `Recruiter with id ${idRec} has been updated`,
-                            data : data
-                        })
+                        try {
+                            const select = await selectRecruiterModel(idRec)
+                            if (select.length) {
+                                const result = await pathRecruiterModel(data, idRec)
+                                if (result.affectedRows) {
+                                    res.send({
+                                        success: true,
+                                        message: `Recruiter with id ${idRec} has been Update`
+                                    })
+                                } else {
+                                    res.send({
+                                        success: true,
+                                        message: `Failed Update`
+                                    })
+                                }
+                                
+                            } else {
+                                res.send({
+                                    success: true,
+                                    message: `Not Found`
+                                })
+                            }
+                        } catch (error) {
+                            res.send({
+                                success: false,
+                                message: 'All field must be filled'
+                                })
+                        }
                     }else{
-                        res.send({
-                            success: false,
-                            message: 'filed updated'
-                        })
-                    }
-                        })  
-                  } else{
                     res.send({
                         success: false,
-                        message: 'Recruiter not found'
+                        message: 'All field must be filled'
                         })
-                    }
-                })
-                    }else{
-                    res.send({
-                        success: false,
-                        message: 'erorr'
-                    })
                     }
                 }
+                        
                 
                
 }

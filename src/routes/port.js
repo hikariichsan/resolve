@@ -7,8 +7,8 @@ const router = Router()
 
 router.post('/', authorizationDev,uploadImage,createport)
 router.get('/', authAll,getport)
-router.put('/:id', authorizationDev,putport)
+router.put('/:id', authorizationDev,uploadImage,putport)
 router.delete('/:id', authorizationDev,deleteport)
-router.patch('/:id', authorizationDev,patchport)
+router.patch('/:id', authorizationDev,uploadImage,patchport)
 
 module.exports= router

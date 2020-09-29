@@ -7,8 +7,8 @@ const router = Router()
 
 router.post('/', authorization,uploadImage,createProject)
 router.get('/', authorization ,getProject)
-router.put('/:id', authorization,putProject)
+router.put('/:id', authorization,uploadImage,putProject)
 router.delete('/:id',authorization ,deleteProject)
-router.patch('/:id', authorization ,patchProject)
+router.patch('/:id', authorization ,uploadImage,patchProject)
 
 module.exports= router

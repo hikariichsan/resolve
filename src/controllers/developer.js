@@ -19,12 +19,17 @@ module.exports = {
         }
         try {
             const result = await postDeveloperModel(setData)
-            console.log(result)
+            if(result == undefined){
+                response.send({
+                success: true,
+                message: 'Email Registered'})
+            }else{
             response.send({
                 success: true,
                 message: 'Success Register Developer!',
                 data: result
             })
+        }
         } catch (error) {
             console.log(error)
                 response.status(400).send({
@@ -78,7 +83,7 @@ module.exports = {
             })
         }
     },
-    getDataDeveloper : (req, res)=>{
+    getDataDeveloper : async (req, res)=>{
         let {page, limit, search } = req.query
     
         let searchKey = ''
@@ -104,109 +109,138 @@ module.exports = {
     
     const offset = (page-1)*limit
 
-    getDataDeveloperModel(searchKey,searchValue,limit,offset, result => {
-        if(result.length){
-                        res.status(201).send({
-                            success:true,
-                            message:'List Developer',
-                            data: result
-                        })
-                    }else{
-                        res.send({
-                            success: true,
-                            message: 'There is no item list'
-                        })
-                    }
-    })
-    
+    try {
+        const result = await getDataDeveloperModel(searchKey,searchValue,limit,offset)
+        if (result.length) {
+            res.status(201).send({
+                success:true,
+                message:'List Developer',
+                data: result
+            })
+        } else {
+            res.send({
+                success: true,
+                message: 'There is no item list'
+            })
+        }
+    } catch (error) {
+        res.send({
+            success: false,
+            message: 'Bad required'
+        })
+    }  
    
     },
-    deleteDeveloper : (req,res)=>{
+    deleteDeveloper : async (req,res)=>{
             const idDev = req.params.id
-            selectDeveloperModel(idDev, result =>{
-            if (result.length){
-                deleteDeveloperIDModel(idDev, result=>{
-                    if (result.affectedRows){
+            try {
+                const select = await selectDeveloperModel(idDev)
+                if (select.length) {
+                    const result = await deleteDeveloperIDModel(idDev)
+                    if (result.affectedRows) {
                         res.send({
                             success:true,
                             message:`developer ${idDev} has been deleted`,
                             data: result
                         })
-                    }else{
+                    } else {
                         res.send({
                             success: false,
                             message: 'Data filed to delete'
                         })
                     }
-                })
-            }else{
+                } else {
+                    res.send({
+                        success:false,
+                        message:'Data not Found'
+                    })
+                }
+            } catch (error) {
                 res.send({
                     success:false,
-                    message:'Data not Found'
+                    message:'Bad Required'
                 })
             }
-            })
         },
-        putDeveloper :(req,res)=>{
+        putDeveloper : async(req,res)=>{
                 const idDev = req.params.id
                 const {name, email, password, no_hp} =req.body
                 if (name.trim() && email.trim() && password.trim() && no_hp.trim()){
-               putDeveloperModel (idDev, name, email, password, no_hp, result=>{
-                    console.log(result);
-                            if(result.affectedRows){
-                                res.send({
-                                    success: true,
-                                    message: `Developer with id ${idDev} has been created`,
+                    try {
+                        const select = await selectDeveloperModel(idDev)
+                        if (select.length) {
+                            const result = await putDeveloperModel (idDev,[ name, email, password, no_hp] )
+                        if (result.affectedRows) {
+                            res.send({
+                                success: true,
+                                message: `Developer with id ${idDev} has been created`,
+                            })
+                        } else {
+                            res.send({
+                                success: false,
+                                message: 'Failed to Update'
                                 })
-                                }else{
-                                res.send({
-                                    success: false,
-                                    message: 'All field must be filled'
-                                    })
-                                }
-                })
+                        }
+                        } else {
+                            res.send({
+                                success: false,
+                                message: 'Not Found'
+                                })
+                        }
+                        
+                    } catch (error) {
+                        res.send({
+                            success: false,
+                            message: 'Bad required'
+                            })
+                    }
             }else{
                 res.send({
                     success: false,
-                    message: 'semaua harus di isi mas'
+                    message: 'Field must be filled'
                         })
                     }
             },
-            patchDeveloper : (req,res)=>{
+            patchDeveloper : async (req,res)=>{
                     const idDev  = req.params.id
                     const {name ='', email='',password='',no_hp=''} = req.body
                 if (name.trim() || email.trim() || password.trim() || no_hp.trim() ) {
-                    selectDeveloperModel(idDev, result=>{
-                if (result.length){
                         const data = Object.entries(req.body).map(item =>{
                             return parseInt(item[1]) > 0 ? `${item[0]} = ${item[1]}` : `${item[0]}='${item[1]}'`
                         })
-                        console.log(data);
-                       pathDeveloperModel(idDev,data,result=>{
-                            console.log(result);
-                    if (result.affectedRows){
-                        res.send({
-                            success: true,
-                            message: `Project with id ${idDev} has been updated`,
-                        })
+
+                        try {
+                            const select = await selectDeveloperModel(idDev)
+                            if (select.length) {
+                                const result = await pathDeveloperModel(idDev,data)
+                                if (result.affectedRows) {
+                                    res.send({
+                                        success: true,
+                                        message: `Project with id ${idDev} has been updated`,
+                                    })
+                                } else {
+                                    res.send({
+                                        success: false,
+                                        message: 'filed to updated'
+                                    })
+                                }
+                            } else {
+                                res.send({
+                                    success: false,
+                                    message: 'Not found'
+                                })
+                            }
+                        } catch (error) {
+                            res.send({
+                                success: false,
+                                message: 'Bad required'
+                            })
+                        }
+                     
                     }else{
-                        res.send({
-                            success: false,
-                            message: 'filed updated'
-                        })
-                    }
-                        })  
-                  } else{
                     res.send({
                         success: false,
-                        message: 'project not found'
-                        })
-                    }
-                })
-                    }else{
-                    res.send({
-                        success: false,
-                        message: 'erorr'
+                        message: 'Field must be filled'
                     })
                     }
                 }

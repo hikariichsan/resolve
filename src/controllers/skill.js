@@ -2,17 +2,22 @@ const db = require('../helpers/db')
 const {createSkillModel, getSkillModel, selectSkillModel, deleteSkillIDModel, putSkillModel, patchSkillModel} = require('../models/skill')
 
 module.exports = {
-    createSkill : (req, res) => {
+    createSkill : async (req, res) => {
         const {name_skill, id_bio_dev} = req.body
         if (name_skill && id_bio_dev ){
-            createSkillModel([name_skill, id_bio_dev], result=>{
-                console.log(result);
-res.status(201).send({
-    success:true,
-    message: 'Skill has been created',
-    data: req.body
-})
-            })
+            try {
+                await createSkillModel ([name_skill, id_bio_dev])
+                res.status(201).send({
+                    success:true,
+                    message: 'Skill has been created',
+                    data: req.body
+                })
+            } catch (error) {
+                res.status(201).send({
+                    success:true,
+                    message: 'Bad Required'
+                })
+            }
         }else{
             res.status(500).send({
                 success:false,
@@ -22,7 +27,7 @@ res.status(201).send({
 
         
     },
-    getSkill : (req, res)=>{
+    getSkill : async (req, res)=>{
         let {page, limit, search } = req.query
     
         let searchKey = ''
@@ -48,125 +53,141 @@ res.status(201).send({
     
     const offset = (page-1)*limit
 
-    getSkillModel(searchKey,searchValue,limit,offset, result => {
-        if(result.length){
-                        res.status(201).send({
-                            success:true,
-                            message:'List skill',
-                            data: result
-                        })
-                    }else{
-                        res.send({
-                            success: true,
-                            message: 'There is no item list'
-                        })
-                    }
-    })
-    
+    try {
+        const result = await getSkillModel(searchKey,searchValue,limit,offset)
+        if (result.length) {
+            res.status(201).send({
+                success:true,
+                message:'List skill',
+                data: result
+            })
+        } else {
+            res.send({
+                success: true,
+                message: 'There is no item list'
+            })
+        }
+    } catch (error) {
+        res.send({
+            success: false,
+            message: 'Bad required'
+        })
+    }
    
     },
-    deleteSkill : (req,res)=>{
+    deleteSkill : async(req,res)=>{
             const idSkill = req.params.id
-            selectSkillModel(idSkill, result =>{
-            if (result.length){
-                deleteSkillIDModel(idSkill, result=>{
-                    if (result.affectedRows){
+            try {
+                const select = await selectSkillModel(idSkill)
+                if (select.length) {
+                    const result = await  deleteSkillIDModel(idSkill)
+                    if (result.affectedRows) {
                         res.send({
                             success:true,
                             message:`Skill ${idSkill} has been deleted`,
                             data: result
                         })
-                    }else{
+                    } else {
                         res.send({
                             success: false,
-                            message: 'Data filed to delete'
+                            message: 'Data failed to delete'
                         })
                     }
-                })
-            }else{
+                } else {
+                    res.send({
+                        success:false,
+                        message:'Data not Found'
+                    })
+                }
+            } catch (error) {
                 res.send({
                     success:false,
-                    message:'Data not Found'
+                    message:'Bad required'
                 })
             }
-            })
+           
         },
-        putSkill :(req,res)=>{
+        putSkill : async(req,res)=>{
                 const idSkill = req.params.id
                 const {name_skill} =req.body
                 if (name_skill.trim()){
-                    selectSkillModel(idSkill, result=>{
-                    if (result.length){
                         const data = Object.entries(req.body).map(item =>{
                             return parseInt(item[1]) > 0 ? `${item[0]} = ${item[1]}` : `${item[0]}='${item[1]}'`
                         })
-                        console.log(data);
-               putSkillModel (idSkill,data, result =>{
-                    console.log(result);
-                            if(result.affectedRows){
+                       try {
+                           const select = await selectSkillModel(idSkill)
+                           if (select.length) {
+                               const result = await putSkillModel(idSkill,data)
+                               if (result.affectedRows) {
                                 res.send({
                                     success: true,
                                     message: `SKill with id ${idSkill} has been Update`,
                                 })
-                                }else{
+                               } else {
                                 res.send({
                                     success: false,
-                                    message: 'All field must be filled'
+                                    message: 'Failed to Update'
                                     })
-                                }
-                })
-            }else{
-                    res.send({
-                        success: false,
-                        message: 'Skill not found'
+                               }
+                           } else {
+                            res.send({
+                                success: false,
+                                message: 'Skill not found'
+                            })
+                           }
+                       } catch (error) {
+                        res.send({
+                            success: false,
+                            message: 'Bad Required'
                         })
                     }
-                })
             }else{
                 res.send({
                     success: false,
-                    message: 'Not Found'
+                    message: 'All Fields must be filled'
                         })
                     }
             },
-            patchSkill : (req,res)=>{
+            patchSkill : async (req,res)=>{
                     const idSkill = req.params.id
                     const {name_skill ='',id_bio_dev=''} = req.body
                 if (name_skill.trim() || id_bio_dev.trim()) {
-                    selectSkillModel(idSkill, result=>{
-                if (result.length){
                         const data = Object.entries(req.body).map(item =>{
                             return parseInt(item[1]) > 0 ? `${item[0]} = ${item[1]}` : `${item[0]}='${item[1]}'`
                         })
-                        console.log(data);
-                       patchSkillModel(idSkill,data,result=>{
-                            console.log(result);
-                    if (result.affectedRows){
-                        res.send({
-                            success: true,
-                            message: `Skill with id ${idSkill} has been updated`,
-                        })
-                    }else{
-                        res.send({
-                            success: false,
-                            message: 'filed updated'
-                        })
+                        try {
+                            const select = await selectSkillModel(idSkill)
+                            if (select.length) {
+                                const result = await patchSkillModel(idSkill,data)
+                                if (result.affectedRows) {
+                                 res.send({
+                                     success: true,
+                                     message: `SKill with id ${idSkill} has been Update`,
+                                 })
+                                } else {
+                                 res.send({
+                                     success: false,
+                                     message: 'Failed to Update'
+                                     })
+                                }
+                            } else {
+                             res.send({
+                                 success: false,
+                                 message: 'Skill not found'
+                             })
+                            }
+                        } catch (error) {
+                         res.send({
+                             success: false,
+                             message: 'Bad Required'
+                         })
+                     }
+             }else{
+                 res.send({
+                     success: false,
+                     message: 'Field must be filled'
+                         })
+                     }
                     }
-                        })  
-                  } else{
-                    res.send({
-                        success: false,
-                        message: 'Skill not found'
-                        })
-                    }
-                })
-                    }else{
-                    res.send({
-                        success: false,
-                        message: 'erorr'
-                    })
-                    }
-                }
-                
                
 }

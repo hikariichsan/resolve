@@ -16,6 +16,7 @@ module.exports ={
                 }else  if(error.code == 'ER_DUP_ENTRY' || error.errorno == 1062)
                 {
                     console.log('Here you can handle duplication')
+                    resolve(result)
                 }else{
                     reject(new Error(error))
                 }
@@ -34,38 +35,60 @@ module.exports ={
             })
         })
     },
-    getDataRecruiterModel : (searchKey,searchValue,limit,offset, cb)=>{
-        const query =`SELECT * FROM recruiter WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`
-        db.query(query,(err,result,fields)=>{
-            if(!err){
-              cb(result) 
-            }else{
-                res.send({
-                    success: false,
-                    message: 'Internal Srever Error :' + err
-                })
-    
-            }
+    getDataRecruiterModel : (searchKey,searchValue,limit,offset)=>{
+        return new Promise((resolve,reject)=>{
+            const query =`SELECT * FROM recruiter WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`
+            db.query(query,(err,result,_fields)=>{
+                if(!err){
+                    resolve(result)
+                }else{
+                    reject(new Error(err))
+                }
+        })
         })
     },
-    selectRecruiterModel : (idRec,cb)=>{
-    db.query(`SELECT * FROM recruiter WHERE id_recruiter = ${idRec}`, (err, result, field)=>{
-            cb(result)
+    selectRecruiterModel : (idRec)=>{
+        return new Promise((resolve,reject)=>{
+            db.query(`SELECT * FROM recruiter WHERE id_recruiter = ${idRec}`, (err, result, _field)=>{
+                if (!err) {
+                    resolve(result)
+                } else {
+                    reject(new Error(err))
+                }
+        })
         })
     },
-    deleteRecruiterIDModel : (idRec,cb)=>{
-    db.query(`DELETE FROM recruiter WHERE id_recruiter = ${idRec}`, (err, result, field)=>{
-        cb(result)
+    deleteRecruiterIDModel : (idRec)=>{
+        return new Promise((resolve,reject)=>{
+            db.query(`DELETE FROM recruiter WHERE id_recruiter = ${idRec}`, (err, result, _field)=>{
+                if (!err) {
+                    resolve(result)
+                } else {
+                    reject(new Error(err))
+                }
+        })
         })
     },
-    putRecruiterModel : (idRec, data, cb)=>{
-        db.query(`UPDATE recruiter SET ${data} WHERE id_recruiter = ${idRec}`, (err, result,fields) =>{
-            cb(result)
+    putRecruiterModel : (idRec, data)=>{
+        return new Promise((resolve,reject)=>{
+            db.query(`UPDATE recruiter SET ${data} WHERE id_recruiter = ${idRec}`, (err, result, _fields)=>{
+                if (!err) {
+                    resolve(result)
+                } else {
+                    reject(new Error(err))
+                }
+        })
         })
     },
-    pathRecruiterModel : (idRec, data, cb)=>{
-        db.query(`UPDATE recruiter SET ${data} WHERE id_recruiter = ${idRec}`, (err, result,field)=>{
-cb(result)
+    pathRecruiterModel : (idRec, data)=>{
+        return new Promise((resolve,reject)=>{
+            db.query(`UPDATE recruiter SET ${data} WHERE id_recruiter = ${idRec}`, (err, result, _field)=>{
+                if (!err) {
+                    resolve(result)
+                } else {
+                    reject(new Error(err))
+                }
+        })
         })
     }
 }

@@ -13,39 +13,61 @@ module.exports ={
           })
       })
     },
-    getProjectModel : (searchKey,searchValue,limit,offset, cb)=>{
+    getProjectModel : (searchKey,searchValue,limit,offset)=>{
+        return new Promise((resolve, reject)=>{
         const query =`SELECT * FROM project WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`
-        db.query(query,(err,result,fields)=>{
+        db.query(query,(err,result,_fields)=>{
             if(!err){
-              cb(result) 
+                resolve(result)
             }else{
-                res.send({
-                    success: false,
-                    message: 'Internal Srever Error :' + err
-                })
-    
+                reject(new Error(err))
             }
         })
-    },
-    selectProjectModel : (idProject,cb)=>{
-    db.query(`SELECT * FROM project WHERE id_project = ${idProject}`, (err, result, field)=>{
-            cb(result)
         })
     },
-    deleteProjectIDModel : (idProject,cb)=>{
-    db.query(`DELETE FROM project WHERE id_project = ${idProject}`, (err, result, field)=>{
-        cb(result)
+    selectProjectModel : (idProject)=>{
+        return new Promise((resolve, reject)=>{
+    db.query(`SELECT * FROM project WHERE id_project = ${idProject}`, (err, result, _field)=>{
+        if(!err){
+            resolve(result)
+        }else{
+            reject(new Error(err))
+        }
+    })
         })
     },
-    putProjectModel : (idProject, data, cb)=>{
+    deleteProjectIDModel : (idProject)=>{
+        return new Promise((resolve, reject)=>{
+    db.query(`DELETE FROM project WHERE id_project = ${idProject}`, (err, result, _field)=>{
+        if(!err){
+            resolve(result)
+        }else{
+            reject(new Error(err))
+        }
+    })
+        })
+    },
+    putProjectModel : (idProject, data)=>{
+        return new Promise((resolve, reject)=>{
         db.query(`UPDATE project SET ${data}
-        WHERE id_project = ${idProject}`, (err, result,fields) =>{
-            cb(result)
+        WHERE id_project = ${idProject}`, (err, result,_fields) =>{
+            if(!err){
+                resolve(result)
+            }else{
+                reject(new Error(err))
+            }
+        })
         })
     },
-    patchProjectModel : (idProject, data, cb)=>{
-        db.query(`UPDATE project SET ${data} WHERE id_project = ${idProject}`, (err, result,field)=>{
-cb(result)
+    patchProjectModel : (idProject, data)=>{
+        return new Promise((resolve, reject)=>{
+        db.query(`UPDATE project SET ${data} WHERE id_project = ${idProject}`, (err, result,_field)=>{
+            if(!err){
+                resolve(result)
+            }else{
+                reject(new Error(err))
+            }
+        })
         })
     }
 }

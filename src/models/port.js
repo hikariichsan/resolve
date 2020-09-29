@@ -13,39 +13,66 @@ module.exports ={
             })
         })
       },
-    getPortModel : (searchKey,searchValue,limit,offset, cb)=>{
-        const query =`SELECT * FROM port_dev WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`
-        db.query(query,(err,result,fields)=>{
-            if(!err){
-              cb(result) 
-            }else{
-                res.send({
-                    success: false,
-                    message: 'Internal Srever Error :' + err
-                })
+    getPortModel : (searchKey,searchValue,limit,offset)=>{
+        return new Promise((resolve,reject)=>{
+            const query =`SELECT * FROM port_dev WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`
+            db.query(query,(err,result,_fields)=>{
+                if(!err){
+                    resolve(result)
+                }else{
+                    reject(new Error(err))
+                }
+            })
+        
+
+        })
     
+           
+    },
+    selectPortModel : (idPort) => {
+        return new Promise((resolve, reject) => {
+          db.query(`SELECT * FROM port_dev WHERE id_port = ${idPort}`, (err, result, _field) => {
+            if (!err) {
+              resolve(result)
+            } else {
+              reject(new Error(err))
             }
+          })
         })
-    },
-    selectPortModel : (idPort,cb)=>{
-    db.query(`SELECT * FROM port_dev WHERE id_port = ${idPort}`, (err, result, field)=>{
-            cb(result)
+      },
+    deletePortModel : (idPort) => {
+        return new Promise((resolve, reject) => {
+          db.query(`DELETE FROM portfolio WHERE idPortfolio = ${idPort}`, (err, result, _field) => {
+            if (!err) {
+              resolve(result)
+            } else {
+              reject(new Error(err))
+            }
+          })
         })
-    },
-    deletePortModel : (idPort,cb)=>{
-    db.query(`DELETE FROM port_dev WHERE id_port = ${idPort}`, (err, result, field)=>{
-        cb(result)
+      },
+    putPortModel : (arr, idPort) => {
+        return new Promise((resolve, reject) => {
+          db.query(`UPDATE port_dev SET name_app='${arr[0]}', description='${arr[1]}', link_repo='${arr[2]}', link_publish='${arr[3]}', workplace_related='${arr[4]}',id_bio_dev=${arr[5]},base_type=${arr[6]},image='${arr[7]}'
+             WHERE id_port = ${idPort}`, (err, result, _fields) => {
+            if (!err) {
+              resolve(result)
+            } else {
+              reject(new Error(err))
+            }
+          })
         })
-    },
-    putPortModel : (idPort, data, cb)=>{
-        db.query(`UPDATE port_dev SET ${data}
-        WHERE id_port = ${idPort}`, (err, result,fields) =>{
-            cb(result)
+      },
+    patchPortModel : (data, idPort) => {
+        return new Promise((resolve, reject) => {
+          var query = `UPDATE port_dev SET ${data} WHERE id_port = ?`
+          db.query(query, idPort, (err, result, _field) => {
+            if (!err) {
+              resolve(result)
+            } else {
+              reject(new Error(err))
+            }
+          })
         })
-    },
-    patchPortModel : (idPort, data, cb)=>{
-        db.query(`UPDATE port_dev SET ${data} WHERE id_port = ${idPort}`, (err, result,field)=>{
-cb(result)
-        })
-    }
+      }
 }

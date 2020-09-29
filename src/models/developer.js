@@ -14,8 +14,7 @@ module.exports ={
                    resolve(newResult)
                 }else if(error.code == 'ER_DUP_ENTRY' || error.errorno == 1062)
                 {
-                    console.log('Here you can handle duplication')
-
+                    resolve(result)
                 }else{
                     reject(new Error(error))
                 }
@@ -34,39 +33,64 @@ module.exports ={
             })
         })
     },
-    getDataDeveloperModel : (searchKey,searchValue,limit,offset, cb)=>{
-        const query =`SELECT * FROM developer WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`
-        db.query(query,(err,result,fields)=>{
-            if(!err){
-              cb(result) 
-            }else{
-                res.send({
-                    success: false,
-                    message: 'Internal Srever Error :' + err
-                })
-    
-            }
+    getDataDeveloperModel : (searchKey,searchValue,limit,offset)=>{
+        return new Promise ((resolve, reject)=>{
+            const query =`SELECT * FROM developer WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`
+            db.query(query,(err,result,_fields)=>{
+                if(!error){
+                    resolve(result)
+                }else{
+                    reject(new Error(err))
+                }
+        })
         })
     },
-    selectDeveloperModel : (idDev,cb)=>{
-    db.query(`SELECT * FROM developer WHERE id_dev = ${idDev}`, (err, result, field)=>{
-            cb(result)
+    selectDeveloperModel : (idDev)=>{
+       return new Promise ((resolve, reject)=>{
+        db.query(`SELECT * FROM developer WHERE id_dev = ${idDev}`, (err, result, _field)=>{
+                if(!error){
+                    resolve(result)
+                }else{
+                    reject(new Error(err))
+                }
+        })
         })
     },
     deleteDeveloperIDModel : (idDev,cb)=>{
-    db.query(`DELETE FROM developer WHERE id_dev = ${idDev}`, (err, result, field)=>{
-        cb(result)
-        })
+ 
+        return new Promise ((resolve, reject)=>{
+            db.query(`DELETE FROM developer WHERE id_dev = ${idDev}`, (err, result,_field)=>{
+                    if(!error){
+                        resolve(result)
+                    }else{
+                        reject(new Error(err))
+                    }
+            })
+            })
     },
-    putDeveloperModel : (idDev, name, email, password, no_hp, cb)=>{
+    putDeveloperModel : (idDev, name, email, password, no_hp)=>{
+
+    return new Promise ((resolve, reject)=>{
         db.query(`UPDATE developer SET name='${name}', email='${email}', password='${password}', no_hp='${no_hp}'
-        WHERE id_dev = ${idDev}`, (err, result,fields) =>{
-            cb(result)
+        WHERE id_dev = ${idDev}`, (err, result,_fields) =>{
+                if(!error){
+                    resolve(result)
+                }else{
+                    reject(new Error(err))
+                }
+        })
         })
     },
-    pathDeveloperModel : (idDev, data, cb)=>{
-        db.query(`UPDATE developer SET ${data} WHERE id_dev = ${idDev}`, (err, result,field)=>{
-cb(result)
-        })
+    pathDeveloperModel : (idDev, data)=>{
+ 
+            return new Promise ((resolve, reject)=>{
+                db.query(`UPDATE developer SET ${data} WHERE id_dev = ${idDev}`, (err, result,_field)=>{
+                        if(!error){
+                            resolve(result)
+                        }else{
+                            reject(new Error(err))
+                        }
+                })
+                })
     }
 }

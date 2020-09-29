@@ -14,71 +14,61 @@ module.exports ={
                 })
             })
           },
-    getBioRecModel : (searchKey,searchValue,limit,offset, cb)=>{
+    getBioRecModel : (searchKey,searchValue,limit,offset)=>{
+        return new Promise((resolve, reject)=>{
         const query =`SELECT * FROM bio_recuiter WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`
-        db.query(query,(err,result,fields)=>{
+        db.query(query,(err,result,_fields)=>{
             if(!err){
-              cb(result) 
+                resolve(result)
             }else{
-                res.send({
-                    success: false,
-                    message: 'Internal Srever Error :' + err
-                })
-    
+                reject(new Error(err))
             }
         })
+        })
     },
-    selectBioRecModel : (idBioRec,cb)=>{
-    db.query(`SELECT * FROM bio_recuiter WHERE id_bio_rec = ${idBioRec}`, (err, result, field)=>{
+    selectBioRecModel : (idBioRec)=>{
+        return new Promise((resolve, reject)=>{
+    db.query(`SELECT * FROM bio_recuiter WHERE id_bio_rec = ${idBioRec}`, (err, result, _field)=>{
         if(!err){
-            cb(result) 
-          }else{
-              res.send({
-                  success: false,
-                  message: 'Not Found  :' + err
-              })
-  
-          }
+            resolve(result)
+        }else{
+            reject(new Error(err))
+        }
+    })
         })
     },
-    deleteBioRecIDModel : (idBioRec,cb)=>{
-    db.query(`DELETE FROM bio_recuiter WHERE id_bio_rec = ${idBioRec}`, (err, result, field)=>{
+    deleteBioRecIDModel : (idBioRec)=>{
+        return new Promise((resolve, reject)=>{
+    db.query(`DELETE FROM bio_recuiter WHERE id_bio_rec = ${idBioRec}`, (err, result, _field)=>{
         if(!err){
-            cb(result) 
-          }else{
-              res.send({
-                  success: false,
-                  message: 'Cant to deleted :' + err
-              })
-  
-          }
+            resolve(result)
+        }else{
+            reject(new Error(err))
+        }
+    })
         })
     },
-    putBioRecModel : (idBioRec,name_company, sector,instagram,image, city, linkedin,description, cb)=>{
-        db.query(`UPDATE bio_recuiter SET name_company='${name_company}', sector='${sector}', instagram= '${instagram}', linkedin='${linkedin}', description = '${description}',image = '${image}',city = '${city}'
-        WHERE id_bio_rec = ${idBioRec}`, (err, result,fields) =>{
+    putBioRecModel : (idBioRec,data)=>{
+        return new Promise((resolve, reject)=>{
+        db.query(`UPDATE bio_recuiter SET ${data}
+        WHERE id_bio_rec = ${idBioRec}`, (err, result,_fields) =>{
             if(!err){
-                cb(result) 
-              }else{
-                  res.send({
-                      success: false,
-                      message: 'Cant to Update All :' + err
-                  })
-      
-              }
+                resolve(result)
+            }else{
+                reject(new Error(err))
+            }
+        })
         })
     },
-    pathBioRecModel : (idBioRec, data, cb)=>{
-        db.query(`UPDATE bio_recuiter SET ${data} WHERE id_bio_rec = ${idBioRec}`, (err, result,field)=>{
+    pathBioRecModel : (idBioRec, data)=>{
+        return new Promise((resolve, reject)=>{
+        db.query(`UPDATE bio_recuiter SET ${data} WHERE id_bio_rec = ${idBioRec}`, (err, result,_field)=>{
             if(!err){
-                cb(result) 
-              }else{
-                  res.send({
-                      success: false,
-                      message: 'Cant to Update All :' + err
-                  })
-      
-              }
+                resolve(result)
+            }else{
+                reject(new Error(err))
+            }
+        })
         })
     }
 }

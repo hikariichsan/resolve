@@ -29,7 +29,7 @@ module.exports = {
              }
         
     },
-    getBioRec : (req, res)=>{
+    getBioRec : async (req, res)=>{
         let {page, limit, search } = req.query
     
         let searchKey = ''
@@ -55,67 +55,103 @@ module.exports = {
     
     const offset = (page-1)*limit
 
-    getBioRecModel(searchKey,searchValue,limit,offset, result => {
-        if(result.length){
-                        res.status(201).send({
-                            success:true,
-                            message:'List bio Recruiter',
-                            data: result
-                        })
-                    }else{
-                        res.send({
-                            success: true,
-                            message: 'There is no item list'
-                        })
-                    }
-    })
-    
-   
+    try {
+      const result = await  getBioRecModel(searchKey,searchValue,limit,offset)
+      if (result.length) {
+        res.status(201).send({
+            success:true,
+            message:'List bio Recruiter',
+            data: result
+        })
+      } else {
+        res.send({
+            success: true,
+            message: 'There is no item list'
+        })
+      }
+    } catch (error) {
+        res.send({
+            success: false,
+            message: 'Bad required'
+        })
+    }
+ 
     },
-    deleteBioRec : (req,res)=>{
+    deleteBioRec : async (req,res)=>{
             const idBioRec = req.params.id
-            selectBioRecModel(idBioRec, result =>{
-            if (result.length){
-                deleteBioRecIDModel(idBioRec, result=>{
-                    if (result.affectedRows){
+            try {
+                const select = await selectBioRecModel(idBioRec)
+                if (select.length) {
+                    const result = await deleteBioRecIDModel(idBioRec)
+                    if (result.affectedRows) {
                         res.send({
                             success:true,
                             message:`recruiter bio ${idBioRec} has been deleted`,
                             data: result
                         })
-                    }else{
+                    } else {
                         res.send({
                             success: false,
                             message: 'Data filed to delete'
                         })
                     }
-                })
-            }else{
+                } else {
+                    res.send({
+                        success:false,
+                        message:'Data not Found'
+                    })
+                }
+            } catch (error) {
                 res.send({
                     success:false,
-                    message:'Data not Found'
+                    message:'Bad required'
                 })
             }
-            })
+           
         },
-        putBioRec :(req,res)=>{
+        putBioRec : async(req,res)=>{
                 const idBioRec = req.params.id
                 const {name_company, sector,city,description, instagram, image,linkedin} =req.body
                 if (name_company.trim() && sector.trim() && city.trim() && description.trim() && instagram.trim() && image.trim() && linkedin.trim()){
-               putBioRecModel (idBioRec,name_company, sector,instagram,image, city, linkedin,description, result=>{
-                    console.log(result);
-                            if(result.affectedRows){
-                                res.send({
-                                    success: true,
-                                    message: `Recruiter Bio with id ${idBioRec} has been Update All`,
-                                })
-                                }else{
-                                res.send({
-                                    success: false,
-                                    message: 'All field must be filled'
+                    const setData = {
+                        name_company,
+                        sector,
+                        city,
+                        description,
+                        instagram,
+                        linkedin,
+                        image: req.file === undefined ? '' : req.file.filename
+                    }
+                        const data = Object.entries(setData).map(item =>{
+                            return parseInt(item[1]) > 0 ? `${item[0]} = ${item[1]}` : `${item[0]}='${item[1]}'`
+                        })
+                        try {
+                            const select = await selectBioRecMode(idBioRec)
+                            if (select.length) {
+                                const result = await putBioRecModel(idBioRec,data)
+                                if (result.affectedRows) {
+                                    res.send({
+                                        success: true,
+                                        message: `Recruiter Bio with id ${idBioRec} has been Update All`,
+                                    })
+                                } else {
+                                    res.send({
+                                        success: false,
+                                        message: `Failed to Update`,
                                     })
                                 }
-                })
+                            } else {
+                                res.send({
+                                    success: true,
+                                    message: `Not Found`,
+                                })
+                            }
+                        } catch (error) {
+                            res.send({
+                                success: false,
+                                message: `Bad required`,
+                            })
+                        }
             }else{
                 res.send({
                     success: false,
@@ -123,44 +159,56 @@ module.exports = {
                         })
                     }
             },
-            patchBioRec : (req,res)=>{
+            patchBioRec : async (req,res)=>{
                     const idBioRec  = req.params.id
                     const {name_company='', sector='',city='',description='', instagram='', image='',linkedin=''} =req.body
                 if (name_company.trim() || sector.trim() || city.trim() || description.trim() || instagram.trim() || image.trim() || linkedin.trim()) {
-                    selectBioRecModel(idBioRec, result=>{
-                if (result.length){
-                        const data = Object.entries(req.body).map(item =>{
+                    const setData = {
+                        name_company,
+                        sector,
+                        city,
+                        description,
+                        instagram,
+                        linkedin,
+                        image: req.file === undefined ? '' : req.file.filename
+                    }
+                        const data = Object.entries(setData).map(item =>{
                             return parseInt(item[1]) > 0 ? `${item[0]} = ${item[1]}` : `${item[0]}='${item[1]}'`
                         })
-                        console.log(data);
-                       pathBioRecModel(idBioRec,data,result=>{
-                            console.log(result);
-                    if (result.affectedRows){
-                        res.send({
-                            success: true,
-                            message: `Recruiter with id ${idBioRec} has been updated`,
-                        })
-                    }else{
-                        res.send({
-                            success: false,
-                            message: 'filed updated'
+                        try {
+                            const select = await selectBioRecMode(idBioRec)
+                            if (select.length) {
+                                const result = await pathBioRecModel(idBioRec,data)
+                                if (result.affectedRows) {
+                                    res.send({
+                                        success: true,
+                                        message: `Recruiter Bio with id ${idBioRec} has been Update All`,
+                                    })
+                                } else {
+                                    res.send({
+                                        success: false,
+                                        message: `Failed to Update`,
+                                    })
+                                }
+                            } else {
+                                res.send({
+                                    success: true,
+                                    message: `Not Found`,
+                                })
+                            }
+                        } catch (error) {
+                            res.send({
+                                success: false,
+                                message: `Bad required`,
+                            })
+                        }
+            }else{
+                res.send({
+                    success: false,
+                    message: 'All field must be filled'
                         })
                     }
-                        })  
-                  } else{
-                    res.send({
-                        success: false,
-                        message: 'Recruiter not found'
-                        })
-                    }
-                })
-                    }else{
-                    res.send({
-                        success: false,
-                        message: 'erorr'
-                    })
-                    }
-                }
+            }
                 
                
 }

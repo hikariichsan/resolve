@@ -30,7 +30,7 @@ module.exports = {
 
         
     },
-    getProject : (req, res)=>{
+    getProject : async (req, res)=>{
         let {page, limit, search } = req.query
     
         let searchKey = ''
@@ -55,126 +55,165 @@ module.exports = {
         }
     
     const offset = (page-1)*limit
-
-    getProjectModel(searchKey,searchValue,limit,offset, result => {
-        if(result.length){
-                        res.status(201).send({
-                            success:true,
-                            message:'List Project',
-                            data: result
-                        })
-                    }else{
-                        res.send({
-                            success: true,
-                            message: 'There is no item list'
-                        })
-                    }
-    })
+        try {
+            const result = await getProjectModel(searchKey,searchValue,limit,offset)
+            if(result.length){
+                res.status(201).send({
+                    success:true,
+                    messages:'List Project',
+                    data: result
+                })
+            }else {
+                res.send({
+                    success: true,
+                    messages: 'There is no Portfolio on list'
+                  })
+            }
+        } catch (error) {
+            res.send({
+                success: false,
+                message : 'Bad Required!!'
+            })
+        }
     
    
     },
-    deleteProject : (req,res)=>{
+    deleteProject : async (req,res)=>{
             const idProject = req.params.id
-            selectProjectModel(idProject, result =>{
-            if (result.length){
-                deleteProjectIDModel(idProject, result=>{
-                    if (result.affectedRows){
+            try {
+                const select = await selectProjectModel(idProdev)
+                if (select.length) {
+                    const result = await deleteProjectIDModel(idProdev)
+                    if (result.affectedRows) {
                         res.send({
                             success:true,
-                            message:`Project ${idProject} has been deleted`,
+                            message:`Project  ${idProject} has been deleted`,
                             data: result
                         })
-                    }else{
+                    } else {
                         res.send({
                             success: false,
                             message: 'Data filed to delete'
                         })
                     }
-                })
-            }else{
+                } else {
+                    res.send({
+                        success:false,
+                        message:'Data not Found'
+                    })
+                }
+            } catch (error) {
                 res.send({
                     success:false,
-                    message:'Data not Found'
+                    message:'Bad Required'
                 })
             }
-            })
+           
         },
-        putProject :(req,res)=>{
+        putProject : async (req,res)=>{
                 const idProject = req.params.id
-                const {name_project, location, description, deadline_month, image, id_recruiter} =req.body
+                const {name_project, location, description, deadline_month, id_recruiter} =req.body
                 if (name_project.trim() && location.trim() && description.trim() && deadline_month.trim() && image.trim() && id_recruiter.trim()){
-                    selectProjectModel(idProject, result=>{
-                    if (result.length){
-                        const data = Object.entries(req.body).map(item =>{
+                    const setData = {
+                        name_project,
+                        location,
+                        description,
+                        deadline_month,
+                        id_recruiter,
+                        image: req.file === undefined ? '' : req.file.filename
+                    }
+                        const data = Object.entries(setData).map(item =>{
                             return parseInt(item[1]) > 0 ? `${item[0]} = ${item[1]}` : `${item[0]}='${item[1]}'`
                         })
-                        console.log(data);
-               putProjectModel (idProject,data, result =>{
-                    console.log(result);
-                            if(result.affectedRows){
+                      try {
+                          const select = await selectProjectModel(idProject)
+                          if (select.length) {
+                              const result = await putProjectModel(idProject,data)
+                              if (result.affectedRows) {
                                 res.send({
                                     success: true,
                                     message: `Project with id ${idProject} has been Update`,
                                 })
-                                }else{
+                              } else {
                                 res.send({
                                     success: false,
-                                    message: 'All field must be filled'
-                                    })
-                                }
-                })
-            }else{
-                    res.send({
-                        success: false,
-                        message: 'Project not found'
-                        })
-                    }
-                })
+                                    message: `Project failed to Update`,
+                                })
+                              }
+                          } else {
+                            res.send({
+                                success: false,
+                                message: 'Project not found'
+                                })
+        
+                          }
+                      } catch (error) {
+                        res.send({
+                            success: false,
+                            message: 'Bad required'
+                            })
+    
+                      }
+
             }else{
                 res.send({
                     success: false,
-                    message: 'Not Found'
+                    message: 'All fields must be filled'
                         })
                     }
             },
-            patchProject : (req,res)=>{
+            patchProject : async (req,res)=>{
                     const idProject = req.params.id
-                    const {name_project='', location='', description='', deadline_month='', image='', id_recruiter=''} = req.body
+                    const {name_project='', location='', description='', deadline_month='', id_recruiter=''} = req.body
                 if (name_project.trim() || location.trim() || description.trim() || deadline_month.trim() || image.trim() || id_recruiter.trim()) {
-                    selectProjectModel(idProject, result=>{
-                if (result.length){
-                        const data = Object.entries(req.body).map(item =>{
+                    const setData = {
+                        name_project,
+                        location,
+                        description,
+                        deadline_month,
+                        id_recruiter,
+                        image: req.file === undefined ? '' : req.file.filename
+                    }
+                        const data = Object.entries(setData).map(item =>{
                             return parseInt(item[1]) > 0 ? `${item[0]} = ${item[1]}` : `${item[0]}='${item[1]}'`
                         })
-                        console.log(data);
-                       patchProjectModel(idProject,data,result=>{
-                            console.log(result);
-                    if (result.affectedRows){
-                        res.send({
-                            success: true,
-                            message: `Project with id ${idProject} has been updated`,
-                        })
-                    }else{
-                        res.send({
-                            success: false,
-                            message: 'filed updated'
-                        })
-                    }
-                        })  
-                  } else{
-                    res.send({
-                        success: false,
-                        message: 'Project not found'
-                        })
-                    }
-                })
-                    }else{
-                    res.send({
-                        success: false,
-                        message: 'erorr'
-                    })
-                    }
-                }
+                        try {
+                            const select = await selectProjectModel(idProject)
+                            if (select.length) {
+                                const result = await patchProjectModel(idProject,data)
+                                if (result.affectedRows) {
+                                  res.send({
+                                      success: true,
+                                      message: `Project with id ${idProject} has been Update`,
+                                  })
+                                } else {
+                                  res.send({
+                                      success: false,
+                                      message: `Project failed to Update`,
+                                  })
+                                }
+                            } else {
+                              res.send({
+                                  success: false,
+                                  message: 'Project not found'
+                                  })
+          
+                            }
+                        } catch (error) {
+                          res.send({
+                              success: false,
+                              message: 'Bad required'
+                              })
+      
+                        }
+  
+              }else{
+                  res.send({
+                      success: false,
+                      message: 'field must be filled'
+                          })
+                      }
+              }
                 
                
 }

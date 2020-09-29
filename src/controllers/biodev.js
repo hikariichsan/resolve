@@ -31,7 +31,7 @@ module.exports = {
                  }
         
     },
-    getBioDev : (req, res)=>{
+    getBioDev : async (req, res)=>{
         let {page,order,sort, limit, search } = req.query
     
         let searchKey = ''
@@ -57,85 +57,128 @@ module.exports = {
     
     const offset = (page-1)*limit
 
-    getBioDevModel(searchKey,order,sort,searchValue,limit,offset, result => {
-        if(result.length){
-                        res.status(201).send({
-                            success:true,
-                            message:'List bio Developer',
-                            data: result
-                        })
-                    }else{
-                        res.send({
-                            success: true,
-                            message: 'There is no item list'
-                        })
-                    }
-    })
-    
-   
-    },
-    getBioDevByID : (req,res)=>{
+        try {
+            const result = await  getBioDevModel(searchKey,order,sort,searchValue,limit,offset)
+            if (result.length) {
+              res.status(201).send({
+                  success:true,
+                  message:'List bio Developer',
+                  data: result
+              })
+            } else {
+              res.send({
+                  success: true,
+                  message: 'There is no item list'
+              })
+            }
+          } catch (error) {
+              res.send({
+                  success: false,
+                  message: 'Bad required'
+              })
+          }
+       
+          },
+    getBioDevByID : async (req,res)=>{
         const {id} = req.params
-        getBioDevByIDModel(id,result=>{
-            if (result.length){
-                        res.send({
-                            success: true,
-                            message:`data Bio id ${id}`,
-                            data: result[0]
-                        })
-                    }else{
-                        res.send({
-                            success:false,
-                            message: `data Bio ${id} not found`
-                        })
-                        
-                    }
-        })
+        try {
+            const result = await getBioDevByIDModel(id)
+            if (result.length) {
+                res.send({
+                    success: true,
+                    message:`data Bio id ${id}`,
+                    data: result[0]
+                })
+            } else {
+                res.send({
+                    success:false,
+                    message: `data Bio ${id} not found`
+                })
+            }
+        } catch (error) {
+            res.send({
+                success:false,
+                message: `Bad Required`
+            })
+        }
+       
     },
-    deleteBioDev : (req,res)=>{
+    deleteBioDev : async (req,res)=>{
             const idBioDev = req.params.id
-            selectBioDevModel(idBioDev, result =>{
-            if (result.length){
-                deleteBioDevIDModel(idBioDev, result=>{
-                    if (result.affectedRows){
+            try {
+                const select = await selectBioDevModel(idBioDev)
+                if (select.length) {
+                    const result = await deleteBioDevIDModel(idBioDev)
+                    if (result.affectedRows) {
                         res.send({
                             success:true,
-                            message:`developer bio ${idBioDev} has been deleted`,
+                            message:`Developer bio ${idBioDev} has been deleted`,
                             data: result
                         })
-                    }else{
+                    } else {
                         res.send({
                             success: false,
                             message: 'Data filed to delete'
                         })
                     }
-                })
-            }else{
+                } else {
+                    res.send({
+                        success:false,
+                        message:'Data not Found'
+                    })
+                }
+            } catch (error) {
                 res.send({
                     success:false,
-                    message:'Data not Found'
+                    message:'Bad required'
                 })
             }
-            })
+           
         },
-        putBioDev :(req,res)=>{
+        putBioDev : async (req,res)=>{
                 const idBioDev = req.params.id
                 const {name, status_job,job_desk,image, city, work_place,description} =req.body
                 if (name.trim() && status_job.trim() && job_desk.trim() && image.trim() && city.trim() && work_place.trim() && description.trim()){
-               putBioDevModel (idBioDev,name, status_job,job_desk,image, city, work_place,description, result=>{
-                    console.log(result);
-                            if(result.affectedRows){
-                                res.send({
-                                    success: true,
-                                    message: `Developer Bio with id ${idBioDev} has been Update All`,
-                                })
-                                }else{
-                                res.send({
-                                    success: false,
-                                    message: 'All field must be filled'
+                    const setData = {
+                        name,
+                        status_job,
+                        job_desk,
+                        city,
+                        work_place,
+                        description,
+                        image: req.file === undefined ? '' : req.file.filename
+                    
+                    }
+                        const data = Object.entries(setData).map(item =>{
+                            return parseInt(item[1]) > 0 ? `${item[0]} = ${item[1]}` : `${item[0]}='${item[1]}'`
+                        })
+                        try {
+                            const select = await selectBioDevModel(idBioDev)
+                            if (select.length) {
+                                const result = await putBioDevModel(idBioDev,data)
+                                if (result.affectedRows) {
+                                    res.send({
+                                        success: true,
+                                        message: `Developer Bio with id ${idBioDev} has been Update All`,
+                                    })
+                                } else {
+                                    res.send({
+                                        success: false,
+                                        message: `Failed to Update`,
                                     })
                                 }
-                })
+                            } else {
+                                res.send({
+                                    success: true,
+                                    message: `Not Found`,
+                                })
+                            }
+                        } catch (error) {
+                            res.send({
+                                success: false,
+                                message: `Bad required`,
+                            })
+                        }
             }else{
                 res.send({
                     success: false,
@@ -143,44 +186,57 @@ module.exports = {
                         })
                     }
             },
-            patchBioDev : (req,res)=>{
+            patchBioDev : async (req,res)=>{
                     const idBioDev  = req.params.id
                     const {name='', status_job='',job_desk='',image='', city='', work_place='',description=''} =req.body
                 if (name.trim() || status_job.trim() || job_desk.trim() || image.trim() || city.trim() || work_place.trim() || description.trim()) {
-                    selectBioDevModel(idBioDev, result=>{
-                if (result.length){
-                        const data = Object.entries(req.body).map(item =>{
+                    const setData = {
+                        name,
+                        status_job,
+                        job_desk,
+                        city,
+                        work_place,
+                        description,
+                        image: req.file === undefined ? '' : req.file.filename
+                    
+                    }
+                        const data = Object.entries(setData).map(item =>{
                             return parseInt(item[1]) > 0 ? `${item[0]} = ${item[1]}` : `${item[0]}='${item[1]}'`
                         })
-                        console.log(data);
-                       pathBioDevModel(idBioDev,data,result=>{
-                            console.log(result);
-                    if (result.affectedRows){
-                        res.send({
-                            success: true,
-                            message: `Project with id ${idBioDev} has been updated`,
-                        })
-                    }else{
-                        res.send({
-                            success: false,
-                            message: 'filed updated'
+                        try {
+                            const select = await selectBioDevModel(idBioDev)
+                            if (select.length) {
+                                const result = await pathBioDevModel(idBioDev,data)
+                                if (result.affectedRows) {
+                                    res.send({
+                                        success: true,
+                                        message: `Developer Bio with id ${idBioDev} has been Update All`,
+                                    })
+                                } else {
+                                    res.send({
+                                        success: false,
+                                        message: `Failed to Update`,
+                                    })
+                                }
+                            } else {
+                                res.send({
+                                    success: true,
+                                    message: `Not Found`,
+                                })
+                            }
+                        } catch (error) {
+                            res.send({
+                                success: false,
+                                message: `Bad required`,
+                            })
+                        }
+            }else{
+                res.send({
+                    success: false,
+                    message: 'field must be filled'
                         })
                     }
-                        })  
-                  } else{
-                    res.send({
-                        success: false,
-                        message: 'project not found'
-                        })
-                    }
-                })
-                    }else{
-                    res.send({
-                        success: false,
-                        message: 'erorr'
-                    })
-                    }
-                }
+            }
                 
                
 }

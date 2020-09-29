@@ -1,53 +1,73 @@
 const db = require('../helpers/db')
 
 module.exports ={
-    createSkillModel : (arr, cb) =>{
-        const query =`INSERT INTO skill_dev ( name_skill, id_bio_dev ) VALUES('${arr[0]}', ${arr[1]})`
-        db.query(query, (err, result,fields)=>{
-            if(!err){
-                cb(result) 
-              }else{
-                  res.send({
-                      success: false,
-                      message: 'Cant to created  :' + err
-                  })
-      
-              }
+    createSkillModel : (arr) =>{
+        return new Promise ((resolve,reject)=>{
+            const query =`INSERT INTO skill_dev ( name_skill, id_bio_dev ) VALUES('${arr[0]}', ${arr[1]})`
+            db.query(query, (err, result,_fields)=>{
+                if (!err) {
+                    resolve(result)
+                } else {
+                    reject(new Error(err))
+                }
+        })
         })
     },
-    getSkillModel : (searchKey,searchValue,limit,offset, cb)=>{
+    getSkillModel : (searchKey,searchValue,limit,offset)=>{
+        return new Promise ((resolve,reject)=>{
         const query =`SELECT * FROM skill_dev WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`
-        db.query(query,(err,result,fields)=>{
-            if(!err){
-              cb(result) 
-            }else{
-                res.send({
-                    success: false,
-                    message: 'Internal Srever Error :' + err
-                })
-    
+        db.query(query,(err,result,_fields)=>{
+            if (!err) {
+                resolve(result)
+            } else {
+                reject(new Error(err))
             }
+         })
         })
     },
-    selectSkillModel : (idSkill,cb)=>{
-    db.query(`SELECT * FROM skill_dev WHERE id_skill = ${idSkill}`, (err, result, field)=>{
-            cb(result)
+    selectSkillModel : (idSkill)=>{
+        return new Promise ((resolve,reject)=>{
+    db.query(`SELECT * FROM skill_dev WHERE id_skill = ${idSkill}`, (err, result, _field)=>{
+        if (!err) {
+            resolve(result)
+        } else {
+            reject(new Error(err))
+        }
+     })
         })
     },
-    deleteSkillIDModel : (idSkill,cb)=>{
-    db.query(`DELETE FROM skill_dev WHERE id_skill = ${idSkill}`, (err, result, field)=>{
-        cb(result)
+    deleteSkillIDModel : (idSkill)=>{
+        return new Promise ((resolve,reject)=>{
+    db.query(`DELETE FROM skill_dev WHERE id_skill = ${idSkill}`, (err, result, _field)=>{
+        if (!err) {
+            resolve(result)
+        } else {
+            reject(new Error(err))
+        }
+     })
         })
     },
-    putSkillModel : (idSkill, data, cb)=>{
+    putSkillModel : (idSkill, data)=>{
+        return new Promise ((resolve,reject)=>{
         db.query(`UPDATE skill_dev SET ${data}
-        WHERE id_skill = ${idSkill}`, (err, result,fields) =>{
-            cb(result)
+        WHERE id_skill = ${idSkill}`, (err, result,_fields) =>{
+            if (!err) {
+                resolve(result)
+            } else {
+                reject(new Error(err))
+            }
+         })
         })
     },
-    patchSkillModel : (idSkill, data, cb)=>{
-        db.query(`UPDATE skill_dev SET ${data} WHERE id_skill = ${idSkill}`, (err, result,field)=>{
-cb(result)
+    patchSkillModel : (idSkill, data)=>{
+        return new Promise ((resolve,reject)=>{
+        db.query(`UPDATE skill_dev SET ${data} WHERE id_skill = ${idSkill}`, (err, result,_field)=>{
+            if (!err) {
+                resolve(result)
+            } else {
+                reject(new Error(err))
+            }
+         })
         })
     }
 }

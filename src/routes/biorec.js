@@ -7,8 +7,8 @@ const router = Router()
 
 router.post('/',authorization,uploadImage, createBioRec)
 router.get('/',authorization, getBioRec)
-router.put('/:id',authorization, putBioRec)
+router.put('/:id',authorization,uploadImage, putBioRec)
 router.delete('/:id',authorization, deleteBioRec)
-router.patch('/:id',authorization, patchBioRec)
+router.patch('/:id',authorization,uploadImage, patchBioRec)
 
 module.exports= router

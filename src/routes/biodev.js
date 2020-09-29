@@ -8,8 +8,8 @@ const router = Router()
 router.post('/',authorizationDev,uploadImage, createBioDev)
 router.get('/',authAll, getBioDev)
 router.get('/:id',authAll, getBioDevByID)
-router.put('/:id',authorizationDev, putBioDev)
+router.put('/:id',authorizationDev,uploadImage, putBioDev)
 router.delete('/:id',authorizationDev, deleteBioDev)
-router.patch('/:id',authorizationDev, patchBioDev)
+router.patch('/:id',authorizationDev,uploadImage, patchBioDev)
 
 module.exports= router
