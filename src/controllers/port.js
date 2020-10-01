@@ -80,7 +80,7 @@ module.exports = {
         
     },
     deleteport : async (req, res) => {
-        const { idPort } = req.params
+        const  idPort  = req.params.id
         try {
           const select = await selectPortModel(idPort)
           if (select.length) {
@@ -151,25 +151,20 @@ module.exports = {
             patchport : async(req,res)=>{
                     const idPort = req.params.id
                     const {name_app='', description='', link_repo='', link_publish='', workplace_related='', base_type='', id_bio_dev=''} = req.body
-                if (name_app.trim() || description.trim() || link_repo.trim() || link_publish.trim() || workplace_related.trim() || base_type.trim()  || id_bio_dev.trim() || image.trim()) {
-                    const setData = {
-                        name_app,
-                        description,
-                        link_repo,
-                        link_publish,
-                        workplace_related,
-                        id_bio_dev,
-                        base_type,
-                        image: req.file === undefined ? '' : req.file.filename
+                    const image = req.file === undefined ? '' : req.file.filename
+                if (name_app.trim() || description.trim() || link_repo.trim() || link_publish.trim() || workplace_related.trim()  || id_bio_dev.trim() || base_type.trim() || image.trim()) {
+                    const setData = { 
+                        ...req.body,
+                        image
                       }
                       const data = Object.entries(setData).map(item => {
                         return parseInt(item[1]) > 0 ? `${item[0]}=${item[1]}` : `${item[0]}='${item[1]}'`
                       })
                 
                       try {
-                        const select = await selectPortfolioModel(idPort)
+                        const select = await selectPortModel(idPort)
                         if (select.length) {
-                          const result = await updatePatchPortfolioModel(data, idPort)
+                          const result = await patchPortModel(data, idPort)
                           if (result.affectedRows) {
                             res.send({
                               success: true,

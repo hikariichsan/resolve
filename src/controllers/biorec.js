@@ -111,22 +111,18 @@ module.exports = {
         },
         putBioRec : async(req,res)=>{
                 const idBioRec = req.params.id
-                const {name_company, sector,city,description, instagram, image,linkedin} =req.body
+                const {name_company, sector,city,description, instagram,linkedin} =req.body
+                const image = req.file === undefined ? '' : req.file.filename
                 if (name_company.trim() && sector.trim() && city.trim() && description.trim() && instagram.trim() && image.trim() && linkedin.trim()){
                     const setData = {
-                        name_company,
-                        sector,
-                        city,
-                        description,
-                        instagram,
-                        linkedin,
-                        image: req.file === undefined ? '' : req.file.filename
+                        ...req.body,
+                        image
                     }
                         const data = Object.entries(setData).map(item =>{
                             return parseInt(item[1]) > 0 ? `${item[0]} = ${item[1]}` : `${item[0]}='${item[1]}'`
                         })
                         try {
-                            const select = await selectBioRecMode(idBioRec)
+                            const select = await selectBioRecModel(idBioRec)
                             if (select.length) {
                                 const result = await putBioRecModel(idBioRec,data)
                                 if (result.affectedRows) {
@@ -147,6 +143,7 @@ module.exports = {
                                 })
                             }
                         } catch (error) {
+                            console.log(error);
                             res.send({
                                 success: false,
                                 message: `Bad required`,
@@ -161,22 +158,18 @@ module.exports = {
             },
             patchBioRec : async (req,res)=>{
                     const idBioRec  = req.params.id
-                    const {name_company='', sector='',city='',description='', instagram='', image='',linkedin=''} =req.body
-                if (name_company.trim() || sector.trim() || city.trim() || description.trim() || instagram.trim() || image.trim() || linkedin.trim()) {
+                    const {name_company='', sector='',city='',description='', instagram='', linkedin=''} =req.body
+                    const image = req.file === undefined ? '' : req.file.filename
+                    if (name_company.trim() || sector.trim() || city.trim() || description.trim() || instagram.trim() || image.trim() || linkedin.trim()) {
                     const setData = {
-                        name_company,
-                        sector,
-                        city,
-                        description,
-                        instagram,
-                        linkedin,
-                        image: req.file === undefined ? '' : req.file.filename
+                        ...req.body,
+                        image
                     }
                         const data = Object.entries(setData).map(item =>{
                             return parseInt(item[1]) > 0 ? `${item[0]} = ${item[1]}` : `${item[0]}='${item[1]}'`
                         })
                         try {
-                            const select = await selectBioRecMode(idBioRec)
+                            const select = await selectBioRecModel(idBioRec)
                             if (select.length) {
                                 const result = await pathBioRecModel(idBioRec,data)
                                 if (result.affectedRows) {

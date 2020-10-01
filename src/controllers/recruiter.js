@@ -179,7 +179,7 @@ module.exports = {
                      try {
                          const select = await selectRecruiterModel(idRec)
                          if (select.length) {
-                             const result = await putRecruiterModel(data,idRec)
+                             const result = await putRecruiterModel(idRec,data)
                              if (result.affectedRows) {
                                 res.send({
                                     success: true,
@@ -242,9 +242,10 @@ module.exports = {
                                 })
                             }
                         } catch (error) {
+                      
                             res.send({
                                 success: false,
-                                message: 'All field must be filled'
+                                message: 'Bad Required'
                                 })
                         }
                     }else{

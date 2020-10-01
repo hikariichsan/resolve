@@ -35,9 +35,9 @@ module.exports ={
     },
     getDataDeveloperModel : (searchKey,searchValue,limit,offset)=>{
         return new Promise ((resolve, reject)=>{
-            const query =`SELECT * FROM developer WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`
+            const query =`SELECT id_dev,email,no_hp,created_at,updated_at FROM developer WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`
             db.query(query,(err,result,_fields)=>{
-                if(!error){
+                if(!err){
                     resolve(result)
                 }else{
                     reject(new Error(err))
@@ -48,7 +48,7 @@ module.exports ={
     selectDeveloperModel : (idDev)=>{
        return new Promise ((resolve, reject)=>{
         db.query(`SELECT * FROM developer WHERE id_dev = ${idDev}`, (err, result, _field)=>{
-                if(!error){
+                if(!err){
                     resolve(result)
                 }else{
                     reject(new Error(err))
@@ -60,7 +60,7 @@ module.exports ={
  
         return new Promise ((resolve, reject)=>{
             db.query(`DELETE FROM developer WHERE id_dev = ${idDev}`, (err, result,_field)=>{
-                    if(!error){
+                    if(!err){
                         resolve(result)
                     }else{
                         reject(new Error(err))
@@ -85,7 +85,7 @@ module.exports ={
  
             return new Promise ((resolve, reject)=>{
                 db.query(`UPDATE developer SET ${data} WHERE id_dev = ${idDev}`, (err, result,_field)=>{
-                        if(!error){
+                        if(!err){
                             resolve(result)
                         }else{
                             reject(new Error(err))

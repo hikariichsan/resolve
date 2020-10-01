@@ -137,16 +137,12 @@ module.exports = {
         },
         putBioDev : async (req,res)=>{
                 const idBioDev = req.params.id
-                const {name, status_job,job_desk,image, city, work_place,description} =req.body
+                const {name, status_job,job_desk, city, work_place,description} =req.body
+                    const image = req.file === undefined ? '' : req.file.filename
                 if (name.trim() && status_job.trim() && job_desk.trim() && image.trim() && city.trim() && work_place.trim() && description.trim()){
                     const setData = {
-                        name,
-                        status_job,
-                        job_desk,
-                        city,
-                        work_place,
-                        description,
-                        image: req.file === undefined ? '' : req.file.filename
+                        ...req.body,
+                        image
                     
                     }
                         const data = Object.entries(setData).map(item =>{
@@ -188,16 +184,12 @@ module.exports = {
             },
             patchBioDev : async (req,res)=>{
                     const idBioDev  = req.params.id
-                    const {name='', status_job='',job_desk='',image='', city='', work_place='',description=''} =req.body
-                if (name.trim() || status_job.trim() || job_desk.trim() || image.trim() || city.trim() || work_place.trim() || description.trim()) {
+                    const {name='', status_job='',job_desk='', city='', work_place='',description=''} =req.body
+                    const image = req.file === undefined ? '' : req.file.filename
+                    if (name.trim() || status_job.trim() || job_desk.trim() || image.trim() || city.trim() || work_place.trim() || description.trim()) {
                     const setData = {
-                        name,
-                        status_job,
-                        job_desk,
-                        city,
-                        work_place,
-                        description,
-                        image: req.file === undefined ? '' : req.file.filename
+                        ...req.body,
+                        image
                     
                     }
                         const data = Object.entries(setData).map(item =>{

@@ -75,6 +75,7 @@ module.exports ={
                 if (!err) {
                     resolve(result)
                 } else {
+                    console.log(err);
                     reject(new Error(err))
                 }
         })
@@ -82,10 +83,11 @@ module.exports ={
     },
     pathRecruiterModel : (idRec, data)=>{
         return new Promise((resolve,reject)=>{
-            db.query(`UPDATE recruiter SET ${data} WHERE id_recruiter = ${idRec}`, (err, result, _field)=>{
+            db.query(`UPDATE recruiter SET ${idRec} WHERE id_recruiter = ${data}`, (err, result, _field)=>{
                 if (!err) {
                     resolve(result)
                 } else {
+                    
                     reject(new Error(err))
                 }
         })

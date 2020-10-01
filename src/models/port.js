@@ -42,7 +42,7 @@ module.exports ={
       },
     deletePortModel : (idPort) => {
         return new Promise((resolve, reject) => {
-          db.query(`DELETE FROM portfolio WHERE idPortfolio = ${idPort}`, (err, result, _field) => {
+          db.query(`DELETE FROM port_dev WHERE id_port = ${idPort}`, (err, result, _field) => {
             if (!err) {
               resolve(result)
             } else {
@@ -65,8 +65,7 @@ module.exports ={
       },
     patchPortModel : (data, idPort) => {
         return new Promise((resolve, reject) => {
-          var query = `UPDATE port_dev SET ${data} WHERE id_port = ?`
-          db.query(query, idPort, (err, result, _field) => {
+          db.query(`UPDATE port_dev SET ${data} WHERE id_port = ${idPort}`, (err, result, _field) => {
             if (!err) {
               resolve(result)
             } else {

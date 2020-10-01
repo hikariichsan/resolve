@@ -54,7 +54,7 @@ module.exports = {
             page = parseInt(page)
         }
     
-    const offset = (page-1)*limit
+    const offset = (page - 1)*limit
         try {
             const result = await getProjectModel(searchKey,searchValue,limit,offset)
             if(result.length){
@@ -81,9 +81,9 @@ module.exports = {
     deleteProject : async (req,res)=>{
             const idProject = req.params.id
             try {
-                const select = await selectProjectModel(idProdev)
+                const select = await selectProjectModel(idProject)
                 if (select.length) {
-                    const result = await deleteProjectIDModel(idProdev)
+                    const result = await deleteProjectIDModel(idProject)
                     if (result.affectedRows) {
                         res.send({
                             success:true,
@@ -113,14 +113,11 @@ module.exports = {
         putProject : async (req,res)=>{
                 const idProject = req.params.id
                 const {name_project, location, description, deadline_month, id_recruiter} =req.body
+                const image = req.file === undefined ? '' : req.file.filename
                 if (name_project.trim() && location.trim() && description.trim() && deadline_month.trim() && image.trim() && id_recruiter.trim()){
                     const setData = {
-                        name_project,
-                        location,
-                        description,
-                        deadline_month,
-                        id_recruiter,
-                        image: req.file === undefined ? '' : req.file.filename
+                        ...req.body,
+                        image
                     }
                         const data = Object.entries(setData).map(item =>{
                             return parseInt(item[1]) > 0 ? `${item[0]} = ${item[1]}` : `${item[0]}='${item[1]}'`
@@ -165,18 +162,16 @@ module.exports = {
             patchProject : async (req,res)=>{
                     const idProject = req.params.id
                     const {name_project='', location='', description='', deadline_month='', id_recruiter=''} = req.body
+                    const image = req.file === undefined ? '' : req.file.filename
                 if (name_project.trim() || location.trim() || description.trim() || deadline_month.trim() || image.trim() || id_recruiter.trim()) {
                     const setData = {
-                        name_project,
-                        location,
-                        description,
-                        deadline_month,
-                        id_recruiter,
-                        image: req.file === undefined ? '' : req.file.filename
+                        ...req.body,
+                        image
                     }
                         const data = Object.entries(setData).map(item =>{
                             return parseInt(item[1]) > 0 ? `${item[0]} = ${item[1]}` : `${item[0]}='${item[1]}'`
                         })
+                        
                         try {
                             const select = await selectProjectModel(idProject)
                             if (select.length) {

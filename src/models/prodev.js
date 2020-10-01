@@ -62,10 +62,11 @@ module.exports ={
     },
     patchProdevModel : (idProdev, data)=>{
         return new Promise((resolve,reject)=>{
-        db.query(`UPDATE project_developer SET ${data} WHERE id_prodev = ${idProdev}`, (err, result,_field)=>{
+        db.query(`UPDATE project_developer SET ${idProdev} WHERE id_prodev = ${data}`, (err, result,_field)=>{
             if (!err) {
                 resolve(result)
             } else {
+                console.log(err);
                 reject(new Error(err))
             }
                 })
