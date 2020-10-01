@@ -7,7 +7,7 @@ const router = Router()
 
 router.post('/register', registerRecruiter)
 router.post('/login', loginRecruiter)
-router.get('/',getDataRecruiter)
+router.get('/',authorization,getDataRecruiter)
 router.put('/:id',authorization, putRecruiter)
 router.delete('/:id',authorization, deleteRecruiter)
 router.patch('/:id',authorization, patchRecruiter)
