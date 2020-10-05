@@ -10,6 +10,7 @@ module.exports = {
         const {name, email, company, position, password, no_hp}= request.body
         const salt = bcrypt.genSaltSync(10)
         const encryptPassword = bcrypt.hashSync(password, salt)
+        const checkEmail = await checkDeveloperEmailModel(email)
         const setData =  {
             name,
             email,
@@ -21,34 +22,50 @@ module.exports = {
             created_at: new Date()
         }
         try {
-            const result = await postRecruiterModel(setData)
-            console.log(result)
-            if(result == undefined){
+            if (name && email && password && no_hp && company) {
+                if (password.length >= 6) {
+                  if (checkEmail.length > 0) {
+                    response.send({
+                      success: false,
+                      message: 'Email has been registered!'
+                    })
+                  } else {
+                      const result = await  postRecruiterModel(setData)
+                      response.send({
+                        success: true,
+                        message: 'Success Register User!',
+                        data: result
+                      })
+                    }
+            
+                } else {
+                  response.send({
+                    success: false,
+                    message: 'Password must containt at least 6 characters!'
+                  })
+                }
+            
+              } else {
                 response.send({
-                success: true,
-                message: 'Email Registered'})
-            }else{
-            response.send({
-                success: true,
-                message: 'Success Register Developer!',
-                data: result
-            })
-        }
-        } catch (error) {
-            console.log(error)
-            response.status(400).send({
+                  success: false,
+                  message: 'All field must be filled!'
+                })
+              }
+            
+            } catch (error) {
+              response.send({
                 success: false,
-                message: 'Bad Request!'
-            })
-
-        }
-    },
-
+                message: 'Bad request!',
+                print: console.log('Error = ' + error)
+              })
+            }
+          },
     loginRecruiter : async (request, response)=>{
         try {
             const { email, password} = request.body
             const checkDataRecruiter = await checkRecruiterModel(email)
-            if (checkDataRecruiter.length >= 1) {
+            if (email.trim() && password.trim()) {
+            if (checkDataRecruiter.length > 0) {
                 const checkPassword = bcrypt.compareSync(
                     password, 
                     checkDataRecruiter[0].password)
@@ -68,20 +85,26 @@ module.exports = {
                    data: payload
                })
            }else{
-            response.status(400).send({
+            response.send({
                 success: false,
                 message: 'Wrong Password!'
             })
            }
             }else{
-                response.status(400).send({
+                response.send({
                     success: false,
                     message: 'Email/Account not Register'
                 })
             }
+        } else {
+            response.send({
+              success: false,
+              message: 'All field must be filled!'
+            })
+          }
         } catch (error) {
             console.log(error)
-            response.status(400).send({
+            response.send({
                 success: false,
                 message: 'Bad Request!'
             })

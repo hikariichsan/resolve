@@ -1,5 +1,5 @@
 const db = require('../helpers/db')
-const {postDeveloperModel,checkDeveloperModel, getDataDeveloperModel, selectDeveloperModel, deleteDeveloperIDModel, putDeveloperModel, pathDeveloperModel} = require('../models/developer')
+const {postDeveloperModel,checkDeveloperModel, checkDeveloperEmailModel, getDataDeveloperModel, selectDeveloperModel, deleteDeveloperIDModel, putDeveloperModel, pathDeveloperModel} = require('../models/developer')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
@@ -9,6 +9,7 @@ module.exports = {
         const {name, email, password, no_hp}= request.body
         const salt = bcrypt.genSaltSync(10)
         const encryptPassword = bcrypt.hashSync(password, salt)
+        const checkEmail = await checkDeveloperEmailModel(email)
         const setData =  {
             name,
             email,
@@ -18,33 +19,51 @@ module.exports = {
             created_at: new Date()
         }
         try {
-            const result = await postDeveloperModel(setData)
-            if(result == undefined){
-                response.send({
-                success: true,
-                message: 'Email Registered'})
-            }else{
-            response.send({
-                success: true,
-                message: 'Success Register Developer!',
-                data: result
-            })
-        }
-        } catch (error) {
-            console.log(error)
-                response.status(400).send({
-                success: false,
-                message: 'Bad Request!'
-            })
+            if (name && email && password && no_hp) {
+                if (password.length >= 6) {
+                  if (checkEmail.length > 0) {
+                    response.send({
+                      success: false,
+                      message: 'Email has been registered!'
+                    })
+                  } else {
+                      const result = await  postDeveloperModel(setData)
+                      response.send({
+                        success: true,
+                        message: 'Success Register User!',
+                        data: result
+                      })
+                    }
             
-             
-        }
-    },
+                } else {
+                  response.send({
+                    success: false,
+                    message: 'Password must containt at least 6 characters!'
+                  })
+                }
+            
+              } else {
+                response.send({
+                  success: false,
+                  message: 'All field must be filled!'
+                })
+              }
+            
+            } catch (error) {
+              response.send({
+                success: false,
+                message: 'Bad request!',
+                print: console.log('Error = ' + error)
+              })
+            }
+          },
+
     loginDeveloper : async (request, response)=>{
         try {
             const { email, password} = request.body
             const checkDataDeveloper = await checkDeveloperModel(email)
-            if (checkDataDeveloper.length >= 1) {
+            if (email.trim() && password.trim()) {
+            if (checkDataDeveloper.length > 0) {
                 const checkPassword = bcrypt.compareSync(
                     password, 
                     checkDataDeveloper[0].password)
@@ -75,6 +94,12 @@ module.exports = {
                     message: 'Email/Account not Register'
                 })
             }
+        } else {
+            response.send({
+              success: false,
+              message: 'All field must be filled!'
+            })
+          }
         } catch (error) {
             console.log(error)
             response.status(400).send({

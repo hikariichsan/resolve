@@ -12,9 +12,6 @@ module.exports ={
                    }
                    delete newResult.password
                    resolve(newResult)
-                }else if(error.code == 'ER_DUP_ENTRY' || error.errorno == 1062)
-                {
-                    resolve(result)
                 }else{
                     reject(new Error(error))
                 }
@@ -33,6 +30,18 @@ module.exports ={
             })
         })
     },
+    checkDeveloperEmailModel: (email) => {
+        return new Promise((resolve, reject) => {
+          db.query('SELECT email FROM developer WHERE email = ?', email, (error, result) => {
+            if (!error) {
+              resolve(result)
+            } else {
+              reject(new Error(error))
+              console.log(error)
+            }
+          })
+        })
+      },
     getDataDeveloperModel : (searchKey,searchValue,limit,offset)=>{
         return new Promise ((resolve, reject)=>{
             const query =`SELECT id_dev,email,no_hp,created_at,updated_at FROM developer WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`

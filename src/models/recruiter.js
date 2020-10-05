@@ -13,10 +13,6 @@ module.exports ={
                    }
                    delete newResult.password
                    resolve(newResult)
-                }else  if(error.code == 'ER_DUP_ENTRY' || error.errorno == 1062)
-                {
-                    console.log('Here you can handle duplication')
-                    resolve(result)
                 }else{
                     reject(new Error(error))
                 }
@@ -35,6 +31,18 @@ module.exports ={
             })
         })
     },
+    checkUserEmailModel: (email) => {
+        return new Promise((resolve, reject) => {
+          db.query('SELECT email FROM recruiter WHERE email = ?', email, (error, result) => {
+            if (!error) {
+              resolve(result)
+            } else {
+              reject(new Error(error))
+              console.log(error)
+            }
+          })
+        })
+      },
     getDataRecruiterModel : (searchKey,searchValue,limit,offset)=>{
         return new Promise((resolve,reject)=>{
             const query =`SELECT * FROM recruiter WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`

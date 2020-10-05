@@ -17,6 +17,8 @@ const { request, response } = require('express')
 
 const app = express()
 
+app.use('/uploads',express.static('uploads'))
+
 app.use(cors())
 app.use(bodyParser.urlencoded({extended: false}))
 app.use('/developer', developerRouter)
