@@ -15,6 +15,7 @@ module.exports ={
                    resolve(newResult)
                 }else{
                     reject(new Error(error))
+                    console.log(error);
                 }
             })
         })
@@ -31,7 +32,7 @@ module.exports ={
             })
         })
     },
-    checkUserEmailModel: (email) => {
+    checkRecEmailModel: (email) => {
         return new Promise((resolve, reject) => {
           db.query('SELECT email FROM recruiter WHERE email = ?', email, (error, result) => {
             if (!error) {

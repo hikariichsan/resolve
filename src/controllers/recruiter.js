@@ -1,5 +1,5 @@
 const db = require('../helpers/db')
-const {postRecruiterModel,checkRecruiterModel, getDataRecruiterModel, selectRecruiterModel, deleteRecruiterIDModel, putRecruiterModel, pathRecruiterModel} = require('../models/recruiter')
+const {postRecruiterModel,checkRecruiterModel,checkRecEmailModel, getDataRecruiterModel, selectRecruiterModel, deleteRecruiterIDModel, putRecruiterModel, pathRecruiterModel} = require('../models/recruiter')
 const bcrypt = require('bcryptjs')
 const { request, response } = require('express')
 const jwt = require('jsonwebtoken')
@@ -10,7 +10,7 @@ module.exports = {
         const {name, email, company, position, password, no_hp}= request.body
         const salt = bcrypt.genSaltSync(10)
         const encryptPassword = bcrypt.hashSync(password, salt)
-        const checkEmail = await checkDeveloperEmailModel(email)
+        const checkEmail = await checkRecEmailModel(email)
         const setData =  {
             name,
             email,
@@ -22,7 +22,7 @@ module.exports = {
             created_at: new Date()
         }
         try {
-            if (name && email && password && no_hp && company) {
+            if (name && email && password && no_hp && company && position) {
                 if (password.length >= 6) {
                   if (checkEmail.length > 0) {
                     response.send({
@@ -30,7 +30,7 @@ module.exports = {
                       message: 'Email has been registered!'
                     })
                   } else {
-                      const result = await  postRecruiterModel(setData)
+                      const result = await postRecruiterModel(setData)
                       response.send({
                         success: true,
                         message: 'Success Register User!',
@@ -55,8 +55,7 @@ module.exports = {
             } catch (error) {
               response.send({
                 success: false,
-                message: 'Bad request!',
-                print: console.log('Error = ' + error)
+                message: 'Bad request!'
               })
             }
           },
