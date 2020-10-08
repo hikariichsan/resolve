@@ -78,6 +78,34 @@ module.exports = {
     
    
     },
+
+    getIDProject: async (req, res) => {    
+        const idProject = req.params.id
+        try{
+            const select = await selectProjectModel(idProject)
+            if (select.length) { 
+                    res.send({
+                        success:true,
+                        message:`Project ${idProject} `,
+                        data: select
+                    })
+            } else {
+                res.send({
+                    success:false,
+                    message:'Data not Found'
+                })
+            }
+        } catch (error) {
+            console.log(error);
+            res.send({
+                success:false,
+                message:'Bad required'
+               
+            })
+        }
+      },
+
+
     deleteProject : async (req,res)=>{
             const idProject = req.params.id
             try {

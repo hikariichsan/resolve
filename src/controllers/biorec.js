@@ -1,5 +1,5 @@
 const db = require('../helpers/db')
-const {createBioRecModel, getBioRecModel, selectBioRecModel, deleteBioRecIDModel, putBioRecModel, pathBioRecModel} = require('../models/biorec')
+const {createBioRecModel, getBioRecModel,getBioRecIDModel, selectBioRecModel, deleteBioRecIDModel, putBioRecModel, pathBioRecModel} = require('../models/biorec')
 
 module.exports = {
     createBioRec : async (req, res) => {
@@ -77,6 +77,31 @@ module.exports = {
     }
  
     },
+    getBioRecID: async (req, res) => {    
+        const idBioRec = req.params.id
+        try{
+            const select = await selectBioRecModel(idBioRec)
+            if (select.length) { 
+                    res.send({
+                        success:true,
+                        message:`recruiter bio ${idBioRec} `,
+                        data: select
+                    })
+            } else {
+                res.send({
+                    success:false,
+                    message:'Data not Found'
+                })
+            }
+        } catch (error) {
+            console.log(error);
+            res.send({
+                success:false,
+                message:'Bad required'
+               
+            })
+        }
+      },
     deleteBioRec : async (req,res)=>{
             const idBioRec = req.params.id
             try {

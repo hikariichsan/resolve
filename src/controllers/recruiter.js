@@ -157,6 +157,35 @@ module.exports = {
         })
     }
     },
+    getDataIDRecruiter: async (req, res) =>{
+        const idRec = req.params.id
+        try {
+            const result = await selectRecruiterModel(idRec)
+            if (select.length) {
+               
+                    res.send({
+                        success:true,
+                        message:`Recruiter ${idRec}`,
+                        data: result
+                    })
+              
+            } else {
+                res.send({
+                    success: false,
+                    message: 'Not Found'
+                })
+                
+            }
+        } catch (error) {
+            console.log(error);
+            console.log(`${idRec}`);
+            res.send({
+                success: false,
+                message: 'Bad Required'
+            })
+        }
+      
+    },
     deleteRecruiter : async (req,res)=>{
             const idRec = req.params.id
             try {

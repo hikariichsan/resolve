@@ -156,6 +156,33 @@ module.exports = {
     }  
    
     },
+
+    getDataIDDeveloper: async (req, res) => {    
+        const idDev = req.params.id
+        try{
+            const select = await selectDeveloperModel(idDev)
+            if (select.length) { 
+                    res.send({
+                        success:true,
+                        message:`Developer ${idDev} `,
+                        data: select
+                    })
+            } else {
+                res.send({
+                    success:false,
+                    message:'Data not Found'
+                })
+            }
+        } catch (error) {
+            console.log(error);
+            res.send({
+                success:false,
+                message:'Bad required'
+               
+            })
+        }
+      },
+
     deleteDeveloper : async (req,res)=>{
             const idDev = req.params.id
             try {

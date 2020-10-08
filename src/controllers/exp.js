@@ -73,9 +73,34 @@ try {
     })
 }
   
-      
-
     },
+
+    getIDexp: async (req, res) => {    
+        const idexp = req.params.id
+        try{
+            const select = await selectexpModel(idexp)
+            if (select.length) { 
+                    res.send({
+                        success:true,
+                        message:`Experience ${idexp} `,
+                        data: select
+                    })
+            } else {
+                res.send({
+                    success:false,
+                    message:'Data not Found'
+                })
+            }
+        } catch (error) {
+            console.log(error);
+            res.send({
+                success:false,
+                message:'Bad required'
+               
+            })
+        }
+      },
+
     deleteexp : async (req,res)=>{
             const idexp = req.params.id
             try {

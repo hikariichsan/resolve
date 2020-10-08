@@ -75,6 +75,32 @@ module.exports = {
     }
    
     },
+    getIDSkill: async (req, res) => {    
+        const idSkill = req.params.id
+        try{
+            const select = await selectSkillModel(idSkill)
+            if (select.length) { 
+                    res.send({
+                        success:true,
+                        message:`Skill ${idSkill} `,
+                        data: select
+                    })
+            } else {
+                res.send({
+                    success:false,
+                    message:'Data not Found'
+                })
+            }
+        } catch (error) {
+            console.log(error);
+            res.send({
+                success:false,
+                message:'Bad required'
+               
+            })
+        }
+      },
+
     deleteSkill : async(req,res)=>{
             const idSkill = req.params.id
             try {

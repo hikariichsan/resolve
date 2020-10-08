@@ -78,6 +78,32 @@ module.exports = {
     }
 
     },
+    getIDProdev: async (req, res) => {    
+        const idProdev = req.params.id
+        try{
+            const select = await selectProdevModel(idProdev)
+            if (select.length) { 
+                    res.send({
+                        success:true,
+                        message:`Project Developer ${idProdev} `,
+                        data: select
+                    })
+            } else {
+                res.send({
+                    success:false,
+                    message:'Data not Found'
+                })
+            }
+        } catch (error) {
+            console.log(error);
+            res.send({
+                success:false,
+                message:'Bad required'
+               
+            })
+        }
+      },
+
     deleteProdev : async (req,res)=>{
             const idProdev = req.params.id
             try {

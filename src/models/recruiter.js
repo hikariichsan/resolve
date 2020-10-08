@@ -56,6 +56,7 @@ module.exports ={
         })
         })
     },
+    
     selectRecruiterModel : (idRec)=>{
         return new Promise((resolve,reject)=>{
             db.query(`SELECT * FROM recruiter WHERE id_recruiter = ${idRec}`, (err, result, _field)=>{
