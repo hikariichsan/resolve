@@ -14,10 +14,10 @@ module.exports = {
             linkedin,
             image: req.file === undefined ? '' : req.file.filename
         }
-        const checkId = await checkIdRecruiterModel(idRecruiter)
+        const checkId = await checkIdRecruiterModel(id_recruiter)
         console.log(checkId)
-        if (checkId.length === 0) {
-            const resultCreate = await createBioRecModel(setData)
+        if (checkId.length === 0 ) {
+             await createBioRecModel(setData)
             res.status(200).send({
                 success: true,
                 message:'Product Created',

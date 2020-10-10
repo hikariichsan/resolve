@@ -14,9 +14,9 @@ module.exports ={
                 })
             })
           },
-          checkIdRecruiterModel: (idRecruiter) => {
+          checkIdRecruiterModel: (id_recruiter) => {
             return new Promise((resolve, reject) => {
-              db.query('SELECT id_recruiter FROM recruiter WHERE id_recruiter = ?', idRecruiter, (err, result) => {
+              db.query('SELECT id_recruiter FROM bio_recuiter WHERE id_recruiter = ?', id_recruiter, (err, result) => {
                 if (!err) {
                   resolve(result)
                 } else {
