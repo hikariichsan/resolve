@@ -1,5 +1,5 @@
 const db = require('../helpers/db')
-const {createBioRecModel, getBioRecModel,getBioRecIDModel, selectBioRecModel, deleteBioRecIDModel, putBioRecModel, pathBioRecModel} = require('../models/biorec')
+const {createBioRecModel, getBioRecModel,checkIdRecruiterModel, selectBioRecModel, deleteBioRecIDModel, putBioRecModel, pathBioRecModel} = require('../models/biorec')
 
 module.exports = {
     createBioRec : async (req, res) => {
@@ -14,7 +14,7 @@ module.exports = {
             linkedin,
             image: req.file === undefined ? '' : req.file.filename
         }
-        const checkId = await checkIdAccountModel(idAccount)
+        const checkId = await checkIdRecruiterModel(idRecruiter)
         console.log(checkId)
         if (checkId.length === 0) {
             const resultCreate = await createBioRecModel(setData)

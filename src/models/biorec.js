@@ -14,6 +14,17 @@ module.exports ={
                 })
             })
           },
+          checkIdRecruiterModel: (idRecruiter) => {
+            return new Promise((resolve, reject) => {
+              db.query('SELECT id_recruiter FROM recruiter WHERE id_recruiter = ?', idRecruiter, (err, result) => {
+                if (!err) {
+                  resolve(result)
+                } else {
+                  reject(new Error(err))
+                }
+              })
+            })
+          },
     getBioRecModel : (searchKey,searchValue,limit,offset)=>{
         return new Promise((resolve, reject)=>{
         const query =`SELECT * FROM bio_recuiter WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`
