@@ -29,7 +29,7 @@ module.exports ={
     
     selectBioRecModel : (idBioRec)=>{
         return new Promise((resolve, reject)=>{
-    db.query(`SELECT * FROM bio_recuiter WHERE id_bio_rec = ${idBioRec}`, (err, result, _field)=>{
+    db.query(`SELECT * FROM bio_recuiter WHERE id_recruiter = ${idBioRec}`, (err, result, _field)=>{
         if(!err){
             resolve(result)
         }else{

@@ -14,12 +14,21 @@ module.exports = {
             linkedin,
             image: req.file === undefined ? '' : req.file.filename
         }
+        const checkId = await checkIdAccountModel(idAccount)
+        console.log(checkId)
+        if (checkId.length === 0) {
             const resultCreate = await createBioRecModel(setData)
             res.status(200).send({
                 success: true,
                 message:'Product Created',
                 data: setData
             })
+        } else {
+            res.send({
+              success: false,
+              message: 'Id already created'
+            })
+          }
              } catch (error) {
                  res.status(500).send({
                      success: false,

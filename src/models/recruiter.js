@@ -64,6 +64,8 @@ module.exports ={
                     resolve(result)
                 } else {
                     reject(new Error(err))
+                    console.log(`${idRec}`);
+
                 }
         })
         })
