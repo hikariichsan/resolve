@@ -27,7 +27,7 @@ module.exports ={
     },
     selectProjectModel : (idProject)=>{
         return new Promise((resolve, reject)=>{
-    db.query(`SELECT * FROM project WHERE id_project = ${idProject}`, (err, result, _field)=>{
+    db.query(`SELECT * FROM project WHERE id_recruiter = ${idProject}`, (err, result, _field)=>{
         if(!err){
             resolve(result)
         }else{
