@@ -109,8 +109,6 @@ module.exports = {
     deleteProject : async (req,res)=>{
             const idProject = req.params.id
             try {
-                const select = await selectProjectModel(idProject)
-                if (select.length) {
                     const result = await deleteProjectIDModel(idProject)
                     if (result.affectedRows) {
                         res.send({
@@ -124,12 +122,7 @@ module.exports = {
                             message: 'Data filed to delete'
                         })
                     }
-                } else {
-                    res.send({
-                        success:false,
-                        message:'Data not Found'
-                    })
-                }
+                
             } catch (error) {
                 res.send({
                     success:false,
