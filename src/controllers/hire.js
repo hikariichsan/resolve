@@ -3,10 +3,10 @@ const { createHireModel, getHireModel, getHireByIdModel, updateHireModel, update
 module.exports = {
 
   createHire: async (req, res) => {
-    const { idHire,projectJob, message, statusConfirm, dateConfirm, price, idBioDev, idProject } = req.body // harus sama yang diinputkan di postman
+    const { projectJob, message, statusConfirm, dateConfirm, price, idBioDev, idProject } = req.body // harus sama yang diinputkan di postman
     if (projectJob && message && statusConfirm && dateConfirm && price && idBioDev && idProject) {
       const setData = {
-        idHire,projectJob, message, statusConfirm, dateConfirm, price, idBioDev, idProject
+        projectJob, message, statusConfirm, dateConfirm, price, idBioDev, idProject
       }
       try {
         await createHireModel(setData)

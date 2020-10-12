@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 12 Okt 2020 pada 18.50
+-- Waktu pembuatan: 13 Okt 2020 pada 00.08
 -- Versi server: 10.4.11-MariaDB
 -- Versi PHP: 7.4.3
 
@@ -149,8 +149,8 @@ CREATE TABLE `hire` (
   `idHire` int(11) NOT NULL,
   `projectJob` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `statusConfirm` tinyint(1) NOT NULL,
-  `dateConfirm` date NOT NULL,
+  `statusConfirm` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `dateConfirm` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
   `price` int(200) NOT NULL,
   `idBioDev` int(11) NOT NULL,
   `idProject` int(11) NOT NULL,
@@ -163,11 +163,14 @@ CREATE TABLE `hire` (
 --
 
 INSERT INTO `hire` (`idHire`, `projectJob`, `message`, `statusConfirm`, `dateConfirm`, `price`, `idBioDev`, `idProject`, `createdAt`, `updatedAt`) VALUES
-(1, 'coba', 'message', 1, '0000-00-00', 500000, 1, 1, '2020-10-12 23:16:47.088561', '2020-10-12 23:16:47.088561'),
-(2, 'medium', 'message', 1, '0000-00-00', 200000, 2, 2, '2020-10-12 23:19:28.107159', '2020-10-12 23:19:28.107159'),
-(3, 'high', 'message', 1, '0000-00-00', 200000, 3, 3, '2020-10-12 23:20:24.964240', '2020-10-12 23:20:24.964240'),
-(4, 'super', 'message', 1, '0000-00-00', 200000, 4, 4, '2020-10-12 23:21:47.951218', '2020-10-12 23:21:47.951218'),
-(6, 'super', 'message', 1, '0000-00-00', 200000, 2, 4, '2020-10-12 23:44:51.677340', '2020-10-12 23:44:51.677340');
+(1, 'coba', 'message', '1', '0000-00-00', 500000, 1, 1, '2020-10-12 23:16:47.088561', '2020-10-12 23:16:47.088561'),
+(2, 'medium', 'message', '1', '0000-00-00', 200000, 2, 2, '2020-10-12 23:19:28.107159', '2020-10-12 23:19:28.107159'),
+(3, 'high', 'message', '1', '0000-00-00', 200000, 3, 3, '2020-10-12 23:20:24.964240', '2020-10-12 23:20:24.964240'),
+(4, 'super', 'message', '1', '0000-00-00', 200000, 4, 4, '2020-10-12 23:21:47.951218', '2020-10-12 23:21:47.951218'),
+(6, 'super', 'message', '1', '0000-00-00', 200000, 2, 4, '2020-10-12 23:44:51.677340', '2020-10-12 23:44:51.677340'),
+(7, 'super', 'message', '1', '0000-00-00', 200000, 3, 10, '2020-10-13 04:28:39.271457', '2020-10-13 04:28:39.271457'),
+(8, 'Opera', 'message', '1', '0000-00-00', 200000, 6, 4, '2020-10-13 04:42:12.915151', '2020-10-13 04:42:12.915151'),
+(9, 'Opera', 'message', '1', '26-12-2020', 200000, 6, 4, '2020-10-13 05:07:37.196623', '2020-10-13 05:07:37.196623');
 
 -- --------------------------------------------------------
 
@@ -433,7 +436,7 @@ ALTER TABLE `exp_dev`
 -- AUTO_INCREMENT untuk tabel `hire`
 --
 ALTER TABLE `hire`
-  MODIFY `idHire` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `idHire` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT untuk tabel `port_dev`
