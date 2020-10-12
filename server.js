@@ -13,6 +13,7 @@ const portRouter = require('./src/routes/port')
 const expRouter = require('./src/routes/exp')
 const prjRouter = require('./src/routes/project')
 const prjDevRouter = require('./src/routes/prodev')
+const hireRouter = require('./src/routes/hire')
 const { request, response } = require('express')
 
 const app = express()
@@ -30,6 +31,7 @@ app.use('/port', portRouter)
 app.use('/exp', expRouter)
 app.use('/project', prjRouter)
 app.use('/project-dev', prjDevRouter)
+app.use('/hire', hireRouter)
 
 app.use((request, response, next) => {
     response.header('Access-Control-Allow-Origin', '*')

@@ -1,5 +1,5 @@
 const db = require('../helpers/db')
-const {createProjectModel, getProjectModel, selectProjectModel, deleteProjectIDModel, putProjectModel, patchProjectModel} = require('../models/project')
+const {createProjectModel, getProjectModel,getProjectByIdModel,selectProjectModel, deleteProjectIDModel, putProjectModel, patchProjectModel} = require('../models/project')
 
 module.exports = {
     createProject : async (req, res) => {
@@ -82,7 +82,7 @@ module.exports = {
     getIDProject: async (req, res) => {    
         const idProject = req.params.id
         try{
-            const select = await selectProjectModel(idProject)
+            const select = await getProjectByIdModel(idProject)
             if (select.length) { 
                     res.send({
                         success:true,
