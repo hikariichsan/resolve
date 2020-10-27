@@ -76,7 +76,7 @@ module.exports = {
                    email,
                    role
                }
-               const token = jwt.sign(payload, process.env.JWT_KEY, {expiresIn : '1h'})
+               const token = jwt.sign(payload, process.env.JWT_KEY)
                payload = { ...payload, token}
                response.send({
                    success: true,

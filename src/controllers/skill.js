@@ -35,7 +35,7 @@ module.exports = {
     
         if(typeof search == 'object'){
             searchKey = Object.keys(search)[0]
-            searchValue = Object.value(search)[0]
+            searchValue = Object.values(search)[0]
         }else{
             searchKey = 'name_skill'
             searchValue = search||''

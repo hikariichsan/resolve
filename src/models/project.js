@@ -15,7 +15,8 @@ module.exports ={
     },
     getProjectModel : (searchKey,searchValue,limit,offset)=>{
         return new Promise((resolve, reject)=>{
-        const query =`SELECT * FROM project WHERE ${searchKey} LIKE '%${searchValue}%' LIMIT ${limit} OFFSET ${offset}`
+        const query =`SELECT project.*, GROUP_CONCAT(bio_dev.name) AS bio_dev  FROM project LEFT JOIN hire ON project.id_project = hire.idProject LEFT JOIN bio_dev ON hire.idBioDev = bio_dev.id_bio_dev
+        WHERE ${searchKey} LIKE '%${searchValue}%' GROUP BY id_project LIMIT ${limit} OFFSET ${offset} `
         db.query(query,(err,result,_fields)=>{
             if(!err){
                 resolve(result)
@@ -38,7 +39,7 @@ module.exports ={
       },
     selectProjectModel : (idProject)=>{
         return new Promise((resolve, reject)=>{
-    db.query(`SELECT * FROM project WHERE id_recruiter = ${idProject}`, (err, result, _field)=>{
+    db.query(`SELECT * FROM project WHERE id_project = ${idProject}`, (err, result, _field)=>{
         if(!err){
             resolve(result)
         }else{
